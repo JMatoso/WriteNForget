@@ -63,7 +63,7 @@ a:hover {
 
 .nav-link.active:hover {
   color: #262626;
-} 
+}
 
 .navbar {
   border-bottom: 1px solid #f0f0f0;
@@ -80,6 +80,40 @@ a:hover {
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
   flex-flow: row wrap;
+}
+
+.editor-company {
+  padding: 10px 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  font-size: xx-large;
+}
+
+.editor-company-footer {
+  padding: 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  font-size: large;
+}
+
+.editor-company::placeholder {
+  font-size: xx-large;
+  color: #495057;
+}
+
+.ck-rounded-corners .ck.ck-editor__editable:not(.ck-editor__nested-editable),
+.ck.ck-editor__editable.ck-rounded-corners:not(.ck-editor__nested-editable) {
+  min-height: 50vh;
+}
+
+.ck.ck-content {
+  padding: 10px !important;
+  font-size: x-large !important;
+  min-height: 100%;
 }
 
 .footer-bottom {

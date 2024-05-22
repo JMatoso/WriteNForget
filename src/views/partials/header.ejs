@@ -46,6 +46,7 @@
                         aria-label="Search">
                 </form>
                 <% if (locals.user) { %>
+                    <a class="btn btn-success mx-2" href="/write">Write</a>
                     <div class="btn-group">
                         <button type="button" class="btn btn-warning"><%= locals.user.nickname %></button>
                         <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split"
@@ -53,7 +54,7 @@
                             <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="/mind">Profile</a></li>
                             <li><a class="dropdown-item" href="#">Blind Mode</a></li>
                             <li>
                                 <hr class="dropdown-divider">

@@ -1,0 +1,55 @@
+<%- include ('../partials/header.ejs') %>
+
+<form action="/write" method="POST">
+    <div class="row mt-4">
+        <div class="col">
+            <h3>Write a Thought</h3>
+        </div>
+        <div class="col">
+            <div class="text-end">
+                <button type="submit" class="btn btn-lg btn-warning">Forget</button>
+            </div>
+        </div>
+    </div>
+    
+    <%- include ('../partials/alerts.ejs') %>
+
+    <div class="form-group">
+        <input type="text" class="editor-company" id="title" placeholder="Title" name="title" required>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md">
+            <div class="form-group">
+                <input type="text" class="editor-company-footer" placeholder="Hastags (life, hack, school)" id="tags" name="tags" required>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-group">
+                <input type="text" class="editor-company-footer" placeholder="Category" id="category" name="category" required>
+            </div>
+        </div>
+    </div>
+    <div class="form-group mt-4">
+        <textarea name="content" id="editor" placeholder="Write your thoughts here"></textarea>
+    </div>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+</form>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            placeholder: 'Write your thoughts here',
+            fontSize: {
+                options: [ 10, 12, 14, 'default', 18, 20, 22 ],
+                supportAllValues: true
+            },
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
+
+<%- include ('../partials/just-footer.ejs') %>

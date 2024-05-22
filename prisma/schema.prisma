@@ -15,6 +15,7 @@ model Post {
   authorId   String
   createdAt  DateTime   @default(now())
   categoryId String
+  slug       String
   hashtags   String
   isDeleted  Boolean    @default(false)
   comments   Comment[]
@@ -27,7 +28,7 @@ model Post {
 
 model Category {
   id        String   @id @default(uuid())
-  name      String
+  name      String   @unique
   isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   posts     Post[]
