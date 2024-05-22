@@ -40,8 +40,7 @@ a:hover {
   padding-top: .5rem;
 }
 
-.nav-link.active {
-  background-color: #fff;
+.nav-item {
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   border: 1px solid #f0f0f0;
@@ -53,15 +52,18 @@ a:hover {
   padding: .5rem 4rem;
   text-transform: uppercase;
   letter-spacing: .1rem;
-  position: absolute;
   z-index: 1;
-  bottom: 0;
-  margin-bottom: -1px;
+  margin-bottom: -10px;
+  margin-right: 10px;
+}
+
+.nav-item.active {
+  background-color: #fff;
 }
 
 .nav-link.active:hover {
   color: #262626;
-}
+} 
 
 .navbar {
   border-bottom: 1px solid #f0f0f0;

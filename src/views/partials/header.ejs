@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-bs-theme="light">
 
 <head>
     <%- include ('metas.ejs') %>
@@ -32,17 +32,38 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Thoughts</a>
+                    <li class="nav-item <%= locals.path === 'home' ? 'active' : '' %>">
+                        <a class="nav-link" aria-current="page" href="/">Thoughts</a>
                     </li>
+                    <% if (locals.user) { %>
+                        <li class="nav-item <%= locals.path === 'mind' ? 'active' : '' %>">
+                            <a class="nav-link" aria-current="page" href="/mind">My Mind</a>
+                        </li>
+                    <% } %>
                 </ul>
                 <form class="d-flex" role="search">
-                    <input class="low-form-control me-2" autocomplete="on" type="search" placeholder="Search" aria-label="Search">
+                    <input class="low-form-control me-2" autocomplete="on" type="search" placeholder="Search"
+                        aria-label="Search">
                 </form>
-                <% if (locals.user){ %>
-                <% } else { %>
-                    <a class="btn btn-warning" href="/login">Login</a>
-                <% } %>
+                <% if (locals.user) { %>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-warning"><%= locals.user.nickname %></button>
+                        <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Blind Mode</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                    <% } else { %>
+                        <a class="btn btn-warning" href="/login">Login</a>
+                    <% } %>
             </div>
         </div>
     </nav>

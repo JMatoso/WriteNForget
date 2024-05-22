@@ -11,6 +11,8 @@ import cookieParser from 'cookie-parser'
 import userRouter from "./routes/user-routes"
 import postRouter from "./routes/post-routes"
 import { MessageType } from './models/messages'
+import { getFirstPath } from './helpers/request-helper'
+import { SavedUser } from './models/passport-user'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -40,6 +42,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.success = req.flash(MessageType.Success)
     res.locals.error = req.flash(MessageType.Error)
     res.locals.user = req.user || null
+    res.locals.path = getFirstPath(req)
+    res.locals.year = new Date().getFullYear()
     next()
 })
 

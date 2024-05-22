@@ -1,16 +1,16 @@
 import passport from 'passport'
 import { Login } from '../../models/login'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { setDefaultMetaTags } from '../../helpers/request-helper'
 
-export const signIn = (req: Request<{}, {}, Login>, res: Response) => {
+export const signIn = (req: Request<{}, {}, Login>, res: Response, next: NextFunction) => {
     passport.authenticate('local', {
-        successRedirect: '/',
+        successRedirect: req.body.redirect,
         failureRedirect: '/login',
         failureFlash: true,
         passReqToCallback: true,
         failureMessage: true
-    })(req, res)
+    })(req, res, next)
 }
 
 export const login = async (req: Request, res: Response) => {
@@ -18,6 +18,7 @@ export const login = async (req: Request, res: Response) => {
         res.redirect('/')
     } 
 
+    const redirect = req.query.redirect ? req.query.redirect : '/'
     const metaTags = setDefaultMetaTags(req, 'Login')
-    res.render('login', { metaTags })
+    res.render('login', { metaTags, redirect})
 }
