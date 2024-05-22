@@ -14,6 +14,10 @@ export const signIn = (req: Request<{}, {}, Login>, res: Response) => {
 }
 
 export const login = async (req: Request, res: Response) => {
+    if (req.isAuthenticated()) {
+        res.redirect('/')
+    } 
+
     const metaTags = setDefaultMetaTags(req, 'Login')
     res.render('login', { metaTags })
 }

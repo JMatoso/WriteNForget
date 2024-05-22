@@ -6,6 +6,6 @@ const postRepository = new PostRepository()
 
 export const createPost = (req: Request<{}, {}, CreatePost>, res: Response) => {
     const model = req.body;
-    const post = postRepository.create(model.title, model.content, model.authorId);
+    const post = postRepository.create(model.title, model.content, model.authorId, model.categoryId, model.tags);
     res.json({ message: 'Post added successfully', data: post });
 }

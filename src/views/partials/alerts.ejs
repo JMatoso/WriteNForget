@@ -1,0 +1,33 @@
+<div class="my-1">
+    <% if (locals.info && locals.info.length > 0) { %>
+        <% locals.info.forEach(function(message) { %>
+            <div class="alert alert-info">
+                <span><%= message %></span>
+            </div>
+        <% }); %>
+    <% } %>
+    
+    <% if (locals.warning && locals.warning.length > 0) { %>
+        <% locals.warning.forEach(function(message) { %>
+            <div class="alert alert-warning">
+                <span><%= message %></span>
+            </div>
+        <% }); %>
+    <% } %>
+    
+    <% if (locals.error && locals.error.length > 0) { %>
+        <% locals.error.forEach(function(message) { %>
+            <div class="alert alert-danger">
+                <span><%= message %></span>
+            </div>
+        <% }); %>
+    <% } %>
+    
+    <% if (locals.success && locals.success.length > 0) { %>
+        <% locals.success.forEach(function(message) { %>
+            <div class="alert alert-success">
+                <span><%= message %></span>
+            </div>
+        <% }); %>
+    <% } %>
+</div>

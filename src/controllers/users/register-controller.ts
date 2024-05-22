@@ -15,11 +15,15 @@ export const createUser = async (req: Request<{}, {}, RegisterUser>, res: Respon
     if (result.type === MessageType.Success) {
         res.redirect('/login')
     }
-    
+
     res.render('user/register', { metaTags })
 }
 
 export const register = (req: Request, res: Response) => {
+    if (req.isAuthenticated()) {
+        res.redirect('/')
+    }
+    
     const metaTags = setDefaultMetaTags(req, 'Register')
     res.render('user/register', { metaTags });
 }

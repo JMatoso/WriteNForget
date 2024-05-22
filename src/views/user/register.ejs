@@ -1,27 +1,12 @@
 <%- include ('../partials/sign-header.ejs') %>
     <div class="w-25 centered">
-        <% if (error.length > 0) { %>
-            <div class="alert alert-danger">
-                <span><%= error %></span>
-            </div>
-        <% } %>
-        <% if (warning.length > 0) { %>
-            <div class="alert alert-warning">
-                <span><%= warning %></span>
-            </div>
-        <% } %>
-        <% if (success.length > 0) { %>
-            <div class="alert alert-danger">
-                <span><%= success %></span>
-            </div>
-        <% } %>
         <form action="/register" method="POST" class="login-form">
             <div class="text-center my-4">
                 <a href="/">
                     <img class="image-scaled" src="images/logo.png" width="100">
                 </a>
             </div>
-
+            <%- include ('../partials/alerts.ejs') %>
             <div class="mb-3">
                 <div class="form-floating">
                     <input autocomplete="nickname" type="text" class="form-control" id="nickname" name="nickname" required
@@ -41,6 +26,8 @@
                     placeholder="Password">
                 <label for="password">Password</label>
             </div>
+
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             
             <div class="mb-3">
                 <a href="/login" class="d-block">I have an account.</a>

@@ -1,5 +1,7 @@
 import path from 'path'
+import csurf from 'csurf'
 import express from "express"
+import { Request, Response, NextFunction } from 'express'
 import passport from 'passport'
 require('./config/auth')(passport)
 import flash from 'connect-flash'
@@ -21,14 +23,18 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(session({
     secret: SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: { secure: false }
 }))
 
 app.use(flash())
 
-app.use((req, res, next) => {
+app.use(csurf())
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.info = req.flash(MessageType.Info)
     res.locals.warning = req.flash(MessageType.Warning)
     res.locals.success = req.flash(MessageType.Success)
@@ -37,8 +43,10 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(function (req: Request, res: Response, next: NextFunction) {
+    res.locals.csrfToken = req.csrfToken()
+    next()
+})
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

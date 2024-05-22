@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { MessageType } from '../models/messages';
 
-export function isAuthenticated(req: Request, res: Response, next: any) {
+export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated()) {
         return next()
     }

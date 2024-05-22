@@ -5,10 +5,10 @@ import { MessageType } from '../models/messages'
 
 const postRepository = new PostRepository()
 
-export const index = async (req: Request, res: Response, next: any) => {
+export const index = async (req: Request, res: Response) => {
     const posts = await postRepository.findMany()
     const metaTags = setDefaultMetaTags(req, 'Thoughts')
+    console.log('posts', req.user)
     req.flash(MessageType.Info, 'Welcome to the blog')
     res.render('index', { posts, metaTags})
-    next()
 }

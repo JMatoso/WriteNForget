@@ -1,26 +1,12 @@
 <%- include ('partials/sign-header.ejs') %>
     <div class="w-25 centered">
-        <% if (error.length > 0) { %>
-            <div class="alert alert-danger">
-                <span><%= error %></span>
-            </div>
-        <% } %>
-        <% if (warning.length > 0) { %>
-            <div class="alert alert-warning">
-                <span><%= warning %></span>
-            </div>
-        <% } %>
-        <% if (success.length > 0) { %>
-            <div class="alert alert-danger">
-                <span><%= success %></span>
-            </div>
-        <% } %>
         <form action="/login" method="POST" class="login-form">
             <div class="text-center my-4">
                 <a href="/">
                     <img class="image-scaled" src="images/logo.png" width="100">
                 </a>
             </div>
+            <%- include ('partials/alerts.ejs') %>
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="email" name="email" required
                     placeholder="name@example.com" autocomplete="email">
@@ -31,6 +17,8 @@
                     placeholder="Password">
                 <label for="password">Password</label>
             </div>
+
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" value="" name="rememberMe" id="rememberMe">

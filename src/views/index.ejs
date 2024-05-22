@@ -1,35 +1,5 @@
 <%- include ('partials/header.ejs') %>
 
-<% if (info.length > 0) { %>
-    <div class="alert alert-info">
-        <span><%= info %></span>
-        <% info.forEach(function(message) { %>
-            <div class="alert alert-info">
-                <span><%= message %></span>
-            </div>
-        <% }) %>
-    </div>
-<% } %>
-
-<% if (info && info.length > 0) { %>
-    <% info.forEach(function(message) { %>
-        <div class="alert alert-info">
-            <span><%= message %></span>
-        </div>
-    <% }) %>
-<% } %>
-
-<% if (locals.info && locals.info.length > 0) { %>
-    <div class="alert alert-info">
-        <% locals.info.forEach(function(message) { %>
-            <span><%= message %></span>
-        <% }); %>
-    </div>
-<% } %>
-
-<% if (info.length > 0) { %>  <div class="alert alert-info">
-    <span><%= info[0] %></span>  </div>
-<% } %>
-
+<%- include ('partials/alerts.ejs') %>
     
 <%- include ('partials/footer.ejs') %>
