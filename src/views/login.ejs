@@ -1,0 +1,51 @@
+<%- include ('partials/sign-header.ejs') %>
+    <div class="w-25 centered">
+        <% if (error.length > 0) { %>
+            <div class="alert alert-danger">
+                <span><%= error %></span>
+            </div>
+        <% } %>
+        <% if (warning.length > 0) { %>
+            <div class="alert alert-warning">
+                <span><%= warning %></span>
+            </div>
+        <% } %>
+        <% if (success.length > 0) { %>
+            <div class="alert alert-danger">
+                <span><%= success %></span>
+            </div>
+        <% } %>
+        <form action="/login" method="POST" class="login-form">
+            <div class="text-center my-4">
+                <a href="/">
+                    <img class="image-scaled" src="images/logo.png" width="100">
+                </a>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" name="email" required
+                    placeholder="name@example.com" autocomplete="email">
+                <label for="email">Email Address</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="password" name="password" required
+                    placeholder="Password">
+                <label for="password">Password</label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" name="rememberMe" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">
+                    Remember Me?
+                </label>
+            </div>
+            
+            <div class="mb-3">
+                <a href="/register" class="d-block">Register</a>
+                <a href="/forgot-password" class="d-block">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-warning">Login</button>
+        </form>
+
+        <%- include ('partials/sign-footer.ejs') %>
+    </div>
