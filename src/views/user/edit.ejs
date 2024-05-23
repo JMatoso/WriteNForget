@@ -1,0 +1,36 @@
+<%- include ('../partials/header.ejs') %>
+
+<div class="app-container">
+    <form action="/mind/edit" method="POST">
+        <%- include ('../partials/fragments/headerWithSubmit.ejs', { title: 'Editing Mind', description: 'Are you okay?' }) %>
+        <%- include ('../partials/alerts.ejs') %>
+
+        <div class="row mt-3">
+            <div class="col-md">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" required id="email" value="<%= user.email %>" name="email" placeholder="name@example.com">
+                    <label for="email">Email</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div>
+                    <div class="form-floating">
+                        <input type="text" autocomplete="nickname" autocapitalize="true" class="form-control" min="2" maxlength="100" max="100" required id="nickname" value="<%= user.nickname %>" name="nickname" placeholder="Esmerald Queen">
+                        <label for="nickname">Nickname</label>
+                    </div>
+                    <small class="text-danger my-1 d-block fs-small">DO NOT USE your real name!</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <div class="form-floating">
+                <input type="text" autocomplete="bio" autocapitalize="true" class="form-control" min="2" maxlength="300" max="300" required id="bio" value="<%= user.bio %>" name="bio" placeholder="Drop a cool bio">
+                <label for="bio">Bio (Be Cool!)</label>
+            </div>
+        </div>
+
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+</div>
+
+<%- include ('../partials/footer.ejs') %>

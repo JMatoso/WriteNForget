@@ -1,6 +1,6 @@
 <% posts.forEach(post => { %>
     <div class="py-5 border-bottom">
-        <small class="d-block">
+        <small class="d-block pointer" onclick="location .href='/author/<%= post.authorId %>'">
             <%= post.authorNickname %>
         </small>
 

@@ -35,8 +35,8 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <form class="d-flex" role="search">
-                <input autocomplete="on" class="low-form-control me-2" type="search" placeholder="Search"
+            <form class="d-flex" role="search" method="get" action="/thoughts">
+                <input autocomplete="on" class="low-form-control me-2" name="search" type="search" placeholder="Search"
                     aria-label="Search">
             </form>
 
@@ -47,15 +47,13 @@
                         <i class="fa-solid fa-pen-to-square"></i>
                         Write
                     </a>
+
+
                     <div class="btn-group">
-                        <button type="button" class="btn btn-warning">
+                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                             <%= locals.user.nickname %>
                         </button>
-                        <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-lg-end">
                             <li><a class="dropdown-item" href="/mind">My Mind</a></li>
                             <li><a class="dropdown-item" href="#">Blind Mode</a></li>
                             <li>

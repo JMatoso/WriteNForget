@@ -1,0 +1,37 @@
+<%- include ('../partials/header.ejs') %>
+
+<div class="row">
+    <div class="col-md-8 border-end">
+        <%- include ('../partials/fragments/header.ejs', { 
+            title: metaTags.title, 
+            cite: `Showing results (${posts.length})` }) 
+        %>
+        
+        <div class="my-4">
+            <%- include ('../partials/alerts.ejs') %>
+        </div>
+
+        <%- include ('../partials/posts.ejs') %>
+
+        <% if(!posts || posts.length <= 0) { %>
+            <div class="w-100">
+                <img src="/images/empty.svg" alt="No posts found" class="w-100 h-50" />
+            </div>
+        <% } %>
+
+        <%- include ('../partials/fragments/pagination.ejs') %>
+    </div>
+    <div class="col-md-4 position-relative">
+        <div class="p-4">
+            <% if (locals.user) { %>
+                <a href="/mind" class="btn btn-light d-block w-100 mb-4">
+                    My Mind
+                </a>
+            <% } %>
+            
+            <%- include ('../partials/fragments/users.ejs', { users, title: `Thinkers Found (${users.length})` }) %>
+        </div>
+    </div>
+</div>
+    
+<%- include ('../partials/footer.ejs') %>

@@ -1,7 +1,8 @@
 import { capitalizeFirstLetters } from '../helpers/string-helper'
-import { TinyUser, SavedUser } from '../models/user'
+import { TinyUser, SavedUser, UserWithPosts } from '../models/user'
 import prismaClient from '../data/prismaClient'
 import { Result } from '../models/result'
+import { Post } from '../models/post'
 import bcrypt from 'bcryptjs'
 
 export class UserRepository {
@@ -11,7 +12,7 @@ export class UserRepository {
                 return Result.setError('User already exists')
             }
 
-            const [_, hash] = await Promise.all([bcrypt.genSalt(10), bcrypt.hash(password, 10)]);
+            const [_, hash] = await Promise.all([bcrypt.genSalt(10), bcrypt.hash(password, 10)])
             const user = await prismaClient.user.create({
                 data: {
                     nickname: capitalizeFirstLetters(nickname),
@@ -78,6 +79,7 @@ export class UserRepository {
                 select: {
                     id: true,
                     nickname: true,
+                    bio: true,
                     email: true,
                     isDeleted: true,
                     isEmailVerified: true,
@@ -90,9 +92,68 @@ export class UserRepository {
             })
 
             return user
-                ? new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted)
+                ? new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string)
                 : null
 
+        } catch (error) {
+            console.error(error)
+            return null
+        }
+    }
+
+    async findByIdWithPosts(id: string, limit: number = 10, page: number = 1): Promise<UserWithPosts | null> {
+        try {
+            const user = await prismaClient.user.findFirst({
+                select: {
+                    id: true,
+                    nickname: true,
+                    bio: true,
+                    email: true,
+                    isDeleted: true,
+                    isEmailVerified: true,
+                    createdAt: true,
+                    password: false,
+                    posts: {
+                        where: {
+                            published: true,
+                            isDeleted: false
+                        },
+                        select: {
+                            id: true,
+                            title: true,
+                            content: true,
+                            published: true,
+                            createdAt: true,
+                            views: true,
+                            slug: true,
+                            hashtags: true,
+                            _count: {
+                                select: {
+                                    comments: true,
+                                    reactions: true
+                                }
+                            }
+                        },
+                        orderBy: {
+                            createdAt: 'desc'
+                        },
+                        skip: (page - 1) * limit,
+                        take: limit
+                    }
+                },
+                where: {
+                    id: id,
+                    isDeleted: false
+                }
+            })
+
+            if (!user) {
+                return null
+            }
+
+            const posts = user.posts.map(post => 
+                new Post(post.id, post.title, post.content as string, post.published, user.nickname, user.id, post.createdAt, post.views, '', post.slug, post.hashtags.split(','), post._count.comments, 0, post._count.reactions))
+            return new UserWithPosts(new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string), posts)
         } catch (error) {
             console.error(error)
             return null
@@ -105,6 +166,7 @@ export class UserRepository {
                 select: {
                     id: true,
                     nickname: true,
+                    bio: true,
                     email: false,
                     isDeleted: false,
                     isEmailVerified: false,
@@ -112,12 +174,15 @@ export class UserRepository {
                     password: false
                 },
                 where: {
-                    nickname: { contains: nickname },
+                    nickname: { 
+                        contains: nickname,
+                        mode: 'insensitive'
+                    },
                     isDeleted: false
                 }
             })
 
-            return users.map(user => new TinyUser(user.id, user.nickname))
+            return users.map(user => new TinyUser(user.id, user.nickname, user.bio as string))
         } catch (error) {
             console.error(error)
             return []

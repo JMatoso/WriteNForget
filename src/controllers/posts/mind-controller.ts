@@ -8,11 +8,11 @@ const postRepository = new PostRepository()
 const categoryRepository = new CategoryRepository()
 
 export const mind = async (req: Request, res: Response) => {
-    const { id, nickname } = req.user as SavedUser
+    const { id, nickname, bio } = req.user as SavedUser
     const posts = await postRepository.findUserPosts(id)
     const categories = await categoryRepository.findInterests(id)
     res.render('user/mind', { 
-        metaTags: defineMetaTags(req, 'My Mind', nickname),
+        metaTags: defineMetaTags(req, 'My Mind', nickname, bio),
         categories, 
         posts
     })

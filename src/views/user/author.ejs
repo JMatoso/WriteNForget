@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-md-8 border-end">
-        <%- include ('../partials/fragments/header.ejs', { title: locals.user.nickname, cite: locals.user.bio }) %>
+        <%- include ('../partials/fragments/header.ejs', { title: author.nickname, cite: author.bio }) %>
 
         <div class="my-4">
             <%- include ('../partials/alerts.ejs') %>
@@ -13,11 +13,13 @@
     </div>
     <div class="col-md-4 position-relative">
         <div class="fixed-column bg-white p-4">
-            <a href="/mind/edit" class="btn btn-light d-block w-100 mb-4">
-                Edit My Profile
-            </a>
+            <% if (user) { %>
+                <a href="#" class="btn btn-light d-block w-100 mb-4">
+                    Follow
+                </a>
+            <% } %>
 
-            <%- include ('../partials/fragments/topics.ejs', { categories, title: 'Recommended topics' }) %>
+            <%- include ('../partials/fragments/topics.ejs', { categories, title: 'Talks about' }) %>
         </div>
     </div>
 </div>

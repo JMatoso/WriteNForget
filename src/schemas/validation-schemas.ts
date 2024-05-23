@@ -6,6 +6,12 @@ export const createUserSchema = z.object({
   password: z.string().min(8).max(255),
 })
 
+export const updateUserSchema = z.object({
+  nickname: z.string().min(3).max(100),
+  email: z.string().email(),
+  bio: z.string().min(3).max(300)
+})
+
 export const createPostSchema = z.object({
   title: z.string().min(2).max(255),
   content: z.string().min(2),

@@ -1,10 +1,12 @@
 import { Request, Response } from 'express'
-import { RegisterUser } from '../../models/user'
 import { MessageType } from '../../types/message-types'
 import { defineMetaTags } from '../../helpers/request-helper'
 import { UserRepository } from '../../repositories/user-repository'
+import { RegisterUser, SavedUser, UpdateUser } from '../../models/user'
+import { CategoryRepository } from '../../repositories/category-repository'
 
 const userRepository = new UserRepository()
+const categoryRepository = new CategoryRepository()
 
 export const createUser = async (req: Request<{}, {}, RegisterUser>, res: Response) => {
     const result = await userRepository.create(req.body.nickname, req.body.email, req.body.password)
@@ -25,4 +27,49 @@ export const register = (req: Request, res: Response) => {
     }
     
     res.render('user/register', { metaTags: defineMetaTags(req, 'Register')});
+}
+
+export const edit = async (req: Request, res: Response) => {
+    const { nickname, email, bio } = req.user as SavedUser
+    res.render('user/edit', { metaTags: defineMetaTags(req, 'Edit Mind', nickname), user: { nickname, email, bio } })
+}
+
+export const update = async (req: Request<{}, {}, UpdateUser>, res: Response) => {
+    const { id } = req.user as SavedUser
+    const result = await userRepository.update(id, req.body.nickname, req.body.email, req.body.bio)
+    req.flash(result.type, result.message)
+    res.redirect('/mind')
+}
+
+export const author = async (req: Request, res: Response) => {
+    const { id } = req.params
+
+    if (!id) {
+        res.redirect('/')
+        return
+    }
+
+    if (req.isAuthenticated()) {
+        const { id } = req.user as SavedUser
+
+        if (id === req.params.id) {
+            res.redirect('/mind')
+            return
+        }
+    }
+
+    const categories = await categoryRepository.findInterests(id)
+    const userWithPosts = await userRepository.findByIdWithPosts(id)
+
+    if (!userWithPosts) {
+        res.redirect('/notfound')
+        return
+    }
+
+    res.render('user/author', { 
+        metaTags: defineMetaTags(req, userWithPosts.user.nickname, userWithPosts.user.nickname, userWithPosts.user.bio),  
+        author: userWithPosts.user,
+        posts: userWithPosts.posts,
+        categories
+    })
 }

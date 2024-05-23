@@ -1,0 +1,15 @@
+<% if (users.length > 0) { %>
+    <div class="mb-5">
+        <h6 class="mb-2 fw-bold"><%= title %></h6>
+        <% users.forEach(user => { %>
+            <div class="pointer mb-3" onclick="location .href='/author/<%= user.id %>'">
+                <small class="fw-bold text-dark fs-small">
+                    <%= user.nickname %>
+                </small>
+                <blockquote class="fw-x-normal text-truncate-2 text-dark d-block">
+                    <%= user.bio %>
+                </blockquote>
+            </div>
+        <% }) %>
+    </div>
+<% } %>

@@ -23,5 +23,9 @@ $(function () {
 
 function copyLinkToClipBoard(relative) {
     const link = window.location.origin + relative
-    console.log(link)
+    navigator.clipboard.writeText(link)
+        .then(() => {})
+        .catch((error) => {
+            console.error('Error copying link:', error);
+        })
 }

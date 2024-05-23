@@ -1,19 +1,7 @@
 <%- include ('../partials/header.ejs') %>
 
-<form action="/write" method="POST">
-    <div class="py-5 border-bottom">
-        <div class="row">
-            <div class="col">
-                <h1>Write a Thought</h1>
-            </div>
-            <div class="col">
-                <div class="text-end">
-                    <button type="submit" class="btn btn-lg btn-warning">Forget</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
+<form action="/write" method="POST">    
+    <%- include ('../partials/fragments/headerWithSubmit.ejs', { title: 'Writing a Thought', description: 'Let\'s Forget About It' }) %>
     <%- include ('../partials/alerts.ejs') %>
 
     <div class="form-group mt-3">

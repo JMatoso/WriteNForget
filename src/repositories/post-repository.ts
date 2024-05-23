@@ -1,11 +1,10 @@
 import { Post } from '../models/post'
+import { Result } from '../models/result'
 import { Comment } from "../models/comment"
 import prismaClient from '../data/prismaClient'
 import { ReactionType } from '../types/reaction-types'
 import { CategoryRepository } from './category-repository'
 import { createFriendlyUrl, tagtize, calculateReadingTime, capitalizeFirstLetters } from '../helpers/string-helper'
-import { Result } from '../models/result'
-import { boolean } from 'zod'
 
 const categoryRepository = new CategoryRepository()
 
@@ -22,6 +21,9 @@ export class PostRepository {
                 })
                 categoryId = newCategory.id
             }
+
+            const isPublished = published as boolean
+            console.log(isPublished)
 
             const hashtags = tagtize(tags)
             const friendlyUrl = createFriendlyUrl(title)
@@ -42,6 +44,23 @@ export class PostRepository {
         } catch (error) {
             console.error(error)
             return Result.setError('Error saving your thought')
+        }
+    }
+
+    async delete(postId: string, userId: string): Promise<Result> {
+        try {
+            await prismaClient.post.update({
+                where: { 
+                    id: postId, 
+                    authorId: userId 
+                },
+                data: { isDeleted: true }
+            })
+
+            return Result.setSuccess('Thought deleted successfully')
+        } catch (error) {
+            console.error(error)
+            return Result.setError('Error deleting thought')
         }
     }
 

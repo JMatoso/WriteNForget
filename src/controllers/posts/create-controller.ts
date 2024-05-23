@@ -20,3 +20,17 @@ export const createPost = async (req: Request<{}, {}, CreatePost>, res: Response
     req.flash(MessageType.Success, result.message)
     res.redirect('/mind')
 }
+
+export const deletePost = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { id: userId } = req.user as SavedUser
+    const result = await postRepository.delete(id, userId)
+
+    if (result.type !== MessageType.Success) {
+        req.flash(result.type, result.message)
+        return res.redirect('/mind')
+    }
+
+    req.flash(MessageType.Success, result.message)
+    res.redirect('/mind')
+}

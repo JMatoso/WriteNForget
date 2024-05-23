@@ -2,34 +2,17 @@
 
 <div class="row">
     <div class="col-md-8 border-end">
-        <div class="py-5 border-bottom">
-            <h1 class="fw-bold">
-                Write And Forget
-            </h1>
-            <blockquote>
-                What we try to forget is what whispers in the silence of the mind.
-            </blockquote>
-        </div>
+        <%- include ('partials/fragments/header.ejs', { 
+            title: 'Write And Forget', 
+            cite: 'What we try to forget is what whispers in the silence of the mind.' }) 
+        %>
         
         <div class="my-4">
             <%- include ('partials/alerts.ejs') %>
         </div>
 
         <%- include ('partials/posts.ejs') %>
-        
-        <nav aria-label="Navigation" class="mt-5">
-            <ul class="pagination justify-content-end">
-                <li class="page-item disabled">
-                    <a class="page-link">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
+        <%- include ('partials/fragments/pagination.ejs') %>
     </div>
     <div class="col-md-4 position-relative">
         <div class="fixed-column bg-white p-4">
@@ -38,23 +21,9 @@
                     My Mind
                 </a>
             <% } %>
-            <% if (users.length > 0) { %>
-                <div class="mb-5">
-                    <h6 class="mb-2 fw-bold">Top thinkers</h6>
-                    <% users.forEach(user => { %>
-                        <div class="pointer mb-3" onclick="location .href='/author/<%= user.id %>'">
-                            <small class="fw-bold text-dark fs-small">
-                                <%= user.nickname %>
-                            </small>
-                            <blockquote class="fw-x-normal text-truncate-2 text-dark d-block">
-                                <%= user.bio %>
-                            </blockquote>
-                        </div>
-                    <% }) %>
-                </div>
-            <% } %>
-
-            <%- include ('partials/fragments/topics.ejs', { categories }) %>
+            
+            <%- include ('partials/fragments/users.ejs', { users, title: 'Top thinkers' }) %>
+            <%- include ('partials/fragments/topics.ejs', { categories, title: 'Recommended Topics' }) %>
         </div>
     </div>
 </div>
