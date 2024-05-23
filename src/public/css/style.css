@@ -1,3 +1,4 @@
+*,
 body {
   scroll-behavior: smooth;
   font-family: "Open Sans", sans-serif;
@@ -15,7 +16,78 @@ html {
   object-position: center;
 }
 
+.no-image img {
+  display: none !important;
+}
+
+.post-content a,
+.post-content p,
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  word-wrap: break-word;
+}
+
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  object-fit: scale-down;
+  object-position: center;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.no-pointer {
+  cursor: default !important;
+}
+
+.fixed-column {
+  width: 21%;
+  height: 100vh;
+  position: fixed;
+  overflow-y: auto;
+}
+
 .centered {
+  margin: 0 auto;
+}
+
+.fw-x-bolder {
+  font-weight: 1000;
+}
+
+.fw-x-normal {
+  font-weight: 500;
+}
+
+.fs-small {
+  font-size: 9pt;
+}
+
+.text-truncate-x {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+}
+
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 75%;
   margin: 0 auto;
 }
 
@@ -32,41 +104,6 @@ a {
 
 a:hover {
   color: #ffc107;
-}
-
-.top-header {
-  background-color: #ffc107;
-  color: #ffffff;
-  padding-top: .5rem;
-}
-
-.nav-item {
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-  border: 1px solid #f0f0f0;
-  border-bottom: none;
-  font-size: 10pt;
-  color: #3e3e3e;
-  transition: .2ms ease-in-out all;
-  font-weight: 500;
-  padding: .5rem 4rem;
-  text-transform: uppercase;
-  letter-spacing: .1rem;
-  z-index: 1;
-  margin-bottom: -10px;
-  margin-right: 10px;
-}
-
-.nav-item.active {
-  background-color: #fff;
-}
-
-.nav-link.active:hover {
-  color: #262626;
-}
-
-.navbar {
-  border-bottom: 1px solid #f0f0f0;
 }
 
 .row-flex {
@@ -139,16 +176,16 @@ a:hover {
 }
 
 .low-form-control {
-  background-color: #f5f5f5;
+  background-color: #f2f0f0;
   border: 2px solid #f2f0f0;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #495057;
   outline: 0;
   box-shadow: none;
   display: block;
   width: 100%;
-  padding: .375rem .75rem;
-  font-size: 1rem;
+  padding: .400rem .75rem;
+  font-size: 11pt;
   font-weight: 400;
   line-height: 1.5;
   -webkit-appearance: none;
@@ -162,7 +199,6 @@ a:hover {
   color: #495057;
   background-color: #fff;
 }
-
 
 #preloader {
   position: fixed;
@@ -213,7 +249,6 @@ a:hover {
   left: -15px;
 }
 
-/* dots jump */
 .dots-jump>div {
   -webkit-animation: dots-jump 1.2s infinite ease;
   animation: dots-jump 1.2s infinite ease;
@@ -259,7 +294,6 @@ a:hover {
   }
 }
 
-/* dots fade */
 .dots-fade>div {
   -webkit-animation: dots-fade 1.6s infinite ease;
   animation: dots-fade 1.6s infinite ease;

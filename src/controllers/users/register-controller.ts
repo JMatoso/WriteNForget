@@ -1,29 +1,28 @@
-import { Request, Response } from 'express';
+import { Request, Response } from 'express'
+import { RegisterUser } from '../../models/user'
+import { MessageType } from '../../types/message-types'
+import { defineMetaTags } from '../../helpers/request-helper'
 import { UserRepository } from '../../repositories/user-repository'
-import { setDefaultMetaTags } from '../../helpers/request-helper';
-import { RegisterUser } from '../../models/register-user';
-import { MessageType } from '../../models/messages';
 
 const userRepository = new UserRepository()
 
 export const createUser = async (req: Request<{}, {}, RegisterUser>, res: Response) => {
-    const newUser = req.body
-    const metaTags = setDefaultMetaTags(req, 'Register')
-    const result = await userRepository.create(newUser.nickname, newUser.email, newUser.password)
+    const result = await userRepository.create(req.body.nickname, req.body.email, req.body.password)
     req.flash(result.type, result.message)
 
     if (result.type === MessageType.Success) {
         res.redirect('/login')
+        return
     }
 
-    res.render('user/register', { metaTags })
+    res.render('user/register', { metaTags: defineMetaTags(req, 'Register')})
 }
 
 export const register = (req: Request, res: Response) => {
     if (req.isAuthenticated()) {
         res.redirect('/')
+        return
     }
     
-    const metaTags = setDefaultMetaTags(req, 'Register')
-    res.render('user/register', { metaTags });
+    res.render('user/register', { metaTags: defineMetaTags(req, 'Register')});
 }

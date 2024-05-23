@@ -1,11 +1,45 @@
-import { Request, Response } from 'express'
-import { setDefaultMetaTags } from '../helpers/request-helper'
+import { Request, Response, NextFunction } from 'express'
+import { defineMetaTags } from '../helpers/request-helper'
+import { UserRepository } from '../repositories/user-repository'
 import { PostRepository } from '../repositories/post-repository'
+import { CategoryRepository } from '../repositories/category-repository'
 
+const userRepository = new UserRepository()
 const postRepository = new PostRepository()
+const categoryRepository = new CategoryRepository()
 
 export const index = async (req: Request, res: Response) => {
-    const posts = await postRepository.findMany()
-    const metaTags = setDefaultMetaTags(req, 'Thoughts')
-    res.render('index', { posts, metaTags})
+    const categories = await categoryRepository.findMany()
+    const posts = await postRepository.findRecommendedPosts()
+    let userId = req.isAuthenticated() ? (req.user as any).id : ''
+    const users = await userRepository.findUsersWithMostPosts(userId)
+    res.render('index', { 
+        posts, 
+        users,
+        categories,
+        metaTags: defineMetaTags(req, 'Thoughts') 
+    })
+}
+
+export const notFound = (req: Request, res: Response, next: NextFunction) => {
+    const metaTags = defineMetaTags(req, 'Not Found')
+    res.status(404).render('notfound', { metaTags })
+}
+
+export const error = (req: Request, res: Response, next: NextFunction) => {
+    if (process.env.SECRET !== 'development') {
+        res.status(500).render('error', { metaTags: defineMetaTags(req, 'Error') })
+    } 
+}
+
+export const contact = (req: Request, res: Response) => {
+    res.render('contact', { metaTags: defineMetaTags(req, 'Get in Touch') })
+}
+
+export const about = (req: Request, res: Response) => {
+    res.render('about', { metaTags: defineMetaTags(req, 'About') })
+}
+
+export const terms = (req: Request, res: Response) => {
+    res.render('terms', { metaTags: defineMetaTags(req, 'Terms & Policy') })
 }

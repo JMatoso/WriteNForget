@@ -1,5 +1,45 @@
 <%- include ('../partials/header.ejs') %>
 
-<%- include ('../partials/alerts.ejs') %>
-    
+<div class="row">
+    <div class="col-md-8 border-end">
+        <div class="py-5 border-bottom">
+            <h1 class="fw-bold">
+                <%= locals.user.nickname %>
+            </h1>
+            <blockquote>
+                <%= locals.user.bio %>
+            </blockquote>
+        </div>
+
+        <div class="my-4">
+            <%- include ('../partials/alerts.ejs') %>
+        </div>
+
+        <%- include ('../partials/posts.ejs') %>
+
+        <nav aria-label="Navigation" class="mt-5">
+            <ul class="pagination justify-content-end">
+                <li class="page-item disabled">
+                    <a class="page-link">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="col-md-4 position-relative">
+        <div class="fixed-column bg-white p-4">
+            <button class="btn btn-light d-block w-100 mb-4">
+                Edit My Profile
+            </button>
+
+            <%- include ('../partials/fragments/topics.ejs', { categories }) %>
+        </div>
+    </div>
+</div>
+
 <%- include ('../partials/footer.ejs') %>

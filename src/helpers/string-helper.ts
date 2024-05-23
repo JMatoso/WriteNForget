@@ -22,7 +22,15 @@ export function tagtize(tags: string): string {
     return uniqueTags.join(',')
 }
 
-export function calculateReadingTime(text: string, wordsPerMinute = 150): number {
+export function calculateReadingTime(text?: string, wordsPerMinute = 150): number {
+    if (!text) {
+        return 0
+    }
+
     const words = text.split(/[\s\t\n\r.,;!?]+/)
     return Math.ceil(words.length / wordsPerMinute)
+}
+
+export function capitalizeFirstLetters(str: string): string {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }

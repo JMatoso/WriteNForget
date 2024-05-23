@@ -1,0 +1,12 @@
+<small class="d-block my-3">
+    <a href="/tag/<%= post.categoryName %>" class="fw-x-normal text-black">
+        <%= post.categoryName %>
+    </a>
+    <small class="text-light">&#xb7;</small>
+    <% if (post.hashtags.length > 0) { %>
+        <% post.hashtags.forEach(tag => { %>
+            <a href="/tag/<%= tag %>" class="fw-x-normal">
+                #<%= tag %>
+            </a>
+    <% })} %>
+</small>

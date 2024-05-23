@@ -11,11 +11,12 @@ model Post {
   id         String     @id @default(uuid())
   title      String
   content    String?
-  published  Boolean    @default(false)
+  published  Boolean    @default(true)
   authorId   String
   createdAt  DateTime   @default(now())
   categoryId String
-  slug       String
+  slug       String     @unique
+  views      Int        @default(0)
   hashtags   String
   isDeleted  Boolean    @default(false)
   comments   Comment[]
@@ -41,6 +42,7 @@ model User {
   email           String     @unique
   nickname        String
   password        String
+  bio             String?
   isDeleted       Boolean    @default(false)
   createdAt       DateTime   @default(now())
   isEnable        Boolean    @default(true)
@@ -53,12 +55,13 @@ model User {
 }
 
 model Comment {
-  id       String @id @default(uuid())
-  text     String
-  postId   String
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id])
-  post     Post   @relation(fields: [postId], references: [id])
+  id        String   @id @default(uuid())
+  text      String
+  postId    String
+  authorId  String
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
 
   @@map("comments")
 }

@@ -9,8 +9,10 @@ const userRouter = Router()
 
 userRouter.get('/login', login)
 userRouter.post('/login', validateData(loginSchema), signIn)
+
 userRouter.get('/register', register)
 userRouter.post('/register', validateData(createUserSchema), createUser)
+
 userRouter.get('/logout', (req, res, next) => {
     req.logout(function (err) {
         if (err) { 

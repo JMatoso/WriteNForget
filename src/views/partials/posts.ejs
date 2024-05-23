@@ -1,0 +1,35 @@
+<% posts.forEach(post => { %>
+    <div class="py-5 border-bottom">
+        <small class="d-block">
+            <%= post.authorNickname %>
+        </small>
+
+        <div class="mt-3">
+            <h4 class="fw-x-bolder pointer" onclick="location .href='/read/<%= post.slug %>'">
+                <%= post.title %>
+            </h4>
+
+            <div class="my-3">
+                <small class="text-truncate-x text-muted fw-x-normal no-image pointer" onclick="location .href='/read/<%= post.slug %>'">
+                    <%- post.content %>
+                </small>
+
+                <%- include('../partials/fragments/tags.ejs', { post: post })  %>
+            </div>
+
+            <div class="text-muted">
+                <small>
+                    <%= post.readingTime %> min read
+                </small>
+                <small>&#xb7;</small>
+                <small>
+                    <%= formatDistanceToNow(post.createdAt, { addSuffix: true }) %>
+                </small>
+            </div>
+
+            <div class="mt-4">
+                <%- include('../partials/fragments/reactions.ejs', { post: post })  %>
+            </div>
+        </div>
+    </div>
+<% }) %>

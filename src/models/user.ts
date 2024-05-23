@@ -1,12 +1,3 @@
-export class PassportUser {
-    id: string
-    nickname: string
-    constructor(id: string, nickname: string) {
-        this.id = id
-        this.nickname = nickname
-    }
-}
-
 export class SavedUser {
     id: string
     nickname: string
@@ -24,4 +15,18 @@ export class SavedUser {
         this.createdAt = createdAt
         this.isDeleted = isDeleted
     }
+}
+
+export interface RegisterUser {
+    email: string
+    password: string
+    nickname: string
+}
+
+export class TinyUser {
+    constructor(
+        public id: string,
+        public nickname: string,
+        public bio?: string,
+    ) {}
 }

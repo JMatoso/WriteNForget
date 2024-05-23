@@ -1,5 +1,5 @@
 import { UserRepository } from '../repositories/user-repository'
-import { PassportUser } from '../models/passport-user'
+import { TinyUser } from '../models/user'
 import localStrategy from 'passport-local'
 import bcrypt from 'bcryptjs'
 
@@ -23,10 +23,10 @@ module.exports = (passport: any) => {
     }))
 
     passport.serializeUser((user: any, done: any) => {
-        done(null, new PassportUser(user.id, user.nickname))
+        done(null, new TinyUser(user.id, user.nickname))
     })
 
-    passport.deserializeUser(async (userDeserialized: PassportUser, done: any) => {
+    passport.deserializeUser(async (userDeserialized: TinyUser, done: any) => {
         const user = await userRepository.findById(userDeserialized.id)
         return done(null, user || null)
     })

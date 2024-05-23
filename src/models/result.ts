@@ -1,4 +1,4 @@
-import { MessageType } from "./messages"
+import { MessageType } from "../types/message-types"
 
 export class Result {
     type: MessageType

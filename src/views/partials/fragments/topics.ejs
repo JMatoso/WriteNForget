@@ -1,0 +1,10 @@
+<% if (categories && categories.length > 0) { %>
+    <div>
+        <h6 class="mb-3 fw-bold">Recommended topics</h6>
+        <% categories.forEach(category => { %>
+            <a href="/mind/tag/<%= category %>" class="badge px-3 py-2 me-1 mb-1 fw-x-normal rounded-pill bg-light text-bg-light">
+                <%= category %>
+            </a>
+        <% }) %>
+    </div>
+<% } %>

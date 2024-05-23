@@ -1,21 +1,22 @@
 import { Request, Response } from 'express'
+import { SavedUser } from '../../models/user'
+import { CreatePost } from '../../models/post'
+import { MessageType } from '../../types/message-types'
+import { defineMetaTags } from '../../helpers/request-helper'
 import { PostRepository } from '../../repositories/post-repository'
-import { CreatePost } from '../../models/create-post';
-import { SavedUser } from '../../models/passport-user';
-import { MessageType } from '../../models/messages';
 
 const postRepository = new PostRepository()
 
-export const createPost = (req: Request<{}, {}, CreatePost>, res: Response) => {
+export const createPost = async (req: Request<{}, {}, CreatePost>, res: Response) => {
     const model = req.body
     const { id } = req.user as SavedUser
-    const post = postRepository.create(model.title, model.content, id, model.category, model.tags);
+    const result = await postRepository.createOrUpdate(model.title, model.content, model.published, id, model.category, model.tags, model.id)
     
-    if (!post) {
-        req.flash(MessageType.Error, 'Error creating post')
-        return res.render('/user/write')
+    if (result.type !== MessageType.Success) {
+        req.flash(result.type, result.message)
+        return res.render('posts/write', { metaTags: defineMetaTags(req, 'My Mind'), post: model })
     }
 
-    req.flash(MessageType.Success, 'Post created successfully')
+    req.flash(MessageType.Success, result.message)
     res.redirect('/mind')
 }

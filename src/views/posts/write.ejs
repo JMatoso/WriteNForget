@@ -1,31 +1,41 @@
 <%- include ('../partials/header.ejs') %>
 
 <form action="/write" method="POST">
-    <div class="row mt-4">
-        <div class="col">
-            <h3>Write a Thought</h3>
-        </div>
-        <div class="col">
-            <div class="text-end">
-                <button type="submit" class="btn btn-lg btn-warning">Forget</button>
+    <div class="py-5 border-bottom">
+        <div class="row">
+            <div class="col">
+                <h1>Write a Thought</h1>
+            </div>
+            <div class="col">
+                <div class="text-end">
+                    <button type="submit" class="btn btn-lg btn-warning">Forget</button>
+                </div>
             </div>
         </div>
     </div>
     
     <%- include ('../partials/alerts.ejs') %>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         <input type="text" class="editor-company" id="title" placeholder="Title" name="title" required>
     </div>
     <div class="row mt-2">
-        <div class="col-md">
+        <div class="col-md-5">
             <div class="form-group">
                 <input type="text" class="editor-company-footer" placeholder="Hastags (life, hack, school)" id="tags" name="tags" required>
             </div>
         </div>
-        <div class="col-md">
+        <div class="col-md-5">
             <div class="form-group">
                 <input type="text" class="editor-company-footer" placeholder="Category" id="category" name="category" required>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <select class="editor-company-footer" id="published" name="published">
+                    <option value="true" selected>Public</option>
+                    <option value="false">Private</option>
+                </select>
             </div>
         </div>
     </div>

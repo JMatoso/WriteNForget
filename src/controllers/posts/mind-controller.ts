@@ -1,25 +1,24 @@
 import { Response, Request } from 'express'
-import { setDefaultMetaTags } from '../../helpers/request-helper'
-import { SavedUser } from '../../models/passport-user'
-import { MetaTags } from '../../models/meta-tags'
+import { SavedUser } from '../../models/user'
+import { defineMetaTags } from '../../helpers/request-helper'
 import { PostRepository } from '../../repositories/post-repository'
+import { CategoryRepository } from '../../repositories/category-repository'
 
 const postRepository = new PostRepository()
+const categoryRepository = new CategoryRepository()
 
 export const mind = async (req: Request, res: Response) => {
-    const { id } = req.user as SavedUser
-    const metaTags = setDefaultMetaTags(req, 'My Mind')
+    const { id, nickname } = req.user as SavedUser
     const posts = await postRepository.findUserPosts(id)
-    setAuthor(req.user, metaTags)
-    res.render('user/mind', { metaTags, posts })
+    const categories = await categoryRepository.findInterests(id)
+    res.render('user/mind', { 
+        metaTags: defineMetaTags(req, 'My Mind', nickname),
+        categories, 
+        posts
+    })
 }
 
 export const write = async (req: Request, res: Response) => {
-    const metaTags = setDefaultMetaTags(req, 'Writing a Thought')
-    setAuthor(req.user, metaTags)
-    res.render('user/write', { metaTags })
-}
-
-function setAuthor(user: any, metaTags: MetaTags) {
-    metaTags.author = user ? (user as SavedUser).nickname : 'WriteNForget'
+    const { nickname } = req.user as SavedUser
+    res.render('posts/write', { metaTags: defineMetaTags(req, 'My Mind', nickname) })
 }

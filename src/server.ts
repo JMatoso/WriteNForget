@@ -10,9 +10,13 @@ import session from 'express-session'
 import cookieParser from 'cookie-parser'
 import userRouter from "./routes/user-routes"
 import postRouter from "./routes/post-routes"
-import { MessageType } from './models/messages'
+import { MessageType } from './types/message-types'
 import { getFirstPath } from './helpers/request-helper'
-import { SavedUser } from './models/passport-user'
+import { formatDistanceToNow } from 'date-fns'
+import moment from 'moment'
+import numeral from 'numeral'
+import appRouter from './routes/app-routes'
+import { notFound, error } from './controllers/index-controller'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -31,19 +35,24 @@ app.use(session({
 }))
 
 app.use(flash())
-
 app.use(csurf())
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.info = req.flash(MessageType.Info)
+    res.locals.error = req.flash(MessageType.Error)
     res.locals.warning = req.flash(MessageType.Warning)
     res.locals.success = req.flash(MessageType.Success)
-    res.locals.error = req.flash(MessageType.Error)
+    
     res.locals.user = req.user || null
     res.locals.path = getFirstPath(req)
     res.locals.year = new Date().getFullYear()
+
+    res.locals.moment = moment
+    res.locals.numeral = numeral
+    res.locals.formatDistanceToNow = formatDistanceToNow
+    
     next()
 })
 
@@ -55,8 +64,12 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
+app.use(appRouter)
 app.use(userRouter)
 app.use(postRouter)
+app.use(notFound)
+app.use(error)
 
 app.listen({
     host: '0.0.0.0',
