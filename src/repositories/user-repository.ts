@@ -283,8 +283,6 @@ export class UserRepository {
                 return posts.find(post => post.authorId === authorId)?.author
             })
             
-            console.log(topAuthors);
-            
             return topAuthors.map(user => new TinyUser(user?.id as string, user?.nickname as string, user?.bio as string))
         } catch (error) {
             console.error(error)

@@ -59,6 +59,7 @@ model Comment {
   text      String
   postId    String
   authorId  String
+  reacts    Int      @default(0)
   createdAt DateTime @default(now())
   author    User     @relation(fields: [authorId], references: [id])
   post      Post     @relation(fields: [postId], references: [id])

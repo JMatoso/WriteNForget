@@ -133,6 +133,12 @@ async function comment(element, postId, authorNickname) {
                         <span class="bg-text-muted d-block">${timeAgo}</span>
                     </div>
                     <div>
+                        <button type="button" class="btn btn-sm" onclick="reactComment(this, '${commentId}')">
+                            <i class="fa-regular fa-lightbulb"></i>
+                            <small class="fw-x-normal fs-small" id="comment-counter-${commentId}">
+                                0
+                            </small>
+                        </button>
                         ${isAuthor ? `
                             <button class="btn text-danger" onclick="deleteComment(this, '${commentId}')">
                                 <i class="fa-solid fa-trash"></i>
@@ -175,5 +181,31 @@ async function deleteComment(element, commentId) {
         } else { toast(data.message, '#FFFFFF') }
         element.disabled = false
     } 
+    catch (error) { setError(error) }
+}
+
+async function reactComment(element, commentId) {
+    try {
+        element.disabled = true
+        const commentReactions = document.getElementById(`comment-counter-${commentId}`)
+        const csrfToken = document.getElementById('csrfToken').value
+
+        const response = await fetch(`/comment/${commentId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'CSRF-Token': csrfToken
+            }
+        })
+
+        const data = JSON.parse(await response.text())
+
+        if (data.success === true) {
+            const count = parseInt(commentReactions.textContent)
+            commentReactions.textContent = count + 1
+        } else { toast(data.message, '#FFFFFF') }
+
+        element.disabled = false
+    }
     catch (error) { setError(error) }
 }

@@ -10,11 +10,17 @@ const postRepository = new PostRepository()
 export const createPost = async (req: Request<{}, {}, CreatePost>, res: Response) => {
     const model = req.body
     const { id } = req.user as SavedUser
-    const result = await postRepository.createOrUpdate(model.title, model.content, model.published, id, model.category, model.tags, model.id)
+    let result
+
+    if (model.id) {
+        result = await postRepository.update(model.id, model.title, model.content, model.published, id, model.category, model.tags)
+    }else {
+        result = await postRepository.create(model.title, model.content, model.published, id, model.category, model.tags)
+    }
     
     if (result.type !== MessageType.Success) {
         req.flash(result.type, result.message)
-        return res.render('posts/write', { metaTags: defineMetaTags(req, 'My Mind'), post: model })
+        return res.render('posts/write', { metaTags: defineMetaTags(req, 'Write Thought'), post: model })
     }
 
     req.flash(MessageType.Success, result.message)

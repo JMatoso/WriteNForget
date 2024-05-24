@@ -6,7 +6,7 @@ import { isAuthenticated } from "../helpers/auth-helper"
 import { read } from '../controllers/posts/read-controller'
 import { mind, write } from "../controllers/posts/mind-controller"
 import { search, categories } from '../controllers/posts/find-controller'
-import { react, publish, comment, deleteComment } from "../controllers/posts/reaction-controller"
+import { react, publish, comment, deleteComment, reactComment } from "../controllers/posts/reaction-controller"
 import { createPost, deletePost } from "../controllers/posts/create-controller"
 
 const postRouter = Router()
@@ -20,11 +20,11 @@ postRouter.put('/publish/:id', isAuthenticated, publish)
 postRouter.get('/delete/:id', isAuthenticated, deletePost)
 
 postRouter.get('/fetch-categories', categories)
-postRouter.get('/write', isAuthenticated, write)
+postRouter.get('/write/:id?', isAuthenticated, write)
 postRouter.post('/write', isAuthenticated, validateData(createPostSchema), createPost)
 
+postRouter.put('/comment/:id', isAuthenticated, reactComment)
 postRouter.delete('/comment/:id', isAuthenticated, deleteComment)
 postRouter.post('/comment', isAuthenticated, validateData(createCommentSchema), comment)
-
 
 export default postRouter

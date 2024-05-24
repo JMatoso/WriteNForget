@@ -78,3 +78,20 @@ export class TinyPost {
         this.slug = slug
     }
 }
+
+export class UpdatePost {
+    id: string
+    title: string
+    content: string
+    category: string
+    hashtags: string
+    published: boolean
+    constructor(id: string, title: string, content: string, category: string, hashtags: string, published: boolean) {
+        this.id = id
+        this.title = title
+        this.content = content
+        this.category = category
+        this.hashtags = hashtags
+        this.published = published
+    }
+}

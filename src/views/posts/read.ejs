@@ -101,9 +101,15 @@
                                 <span class="bg-text-muted d-block"><%= formatDistanceToNow(comment.createdAt, { addSuffix: true }) %></span>
                             </div>
                             <div>
+                                <button type="button" class="btn btn-sm" <% if(locals.user) {  %> onclick="reactComment(this, '<%= comment.id %>')" <% } %>>
+                                    <i class="fa-regular fa-lightbulb"></i>
+                                    <small class="fw-x-normal fs-small" id="comment-counter-<%= comment.id %>">
+                                        <%= numeral(comment.reacts).format('0a') %>
+                                    </small>
+                                </button>
                                 <% if((locals.user && locals.user.id === comment.authorId) || 
                                     (locals.user && locals.user.id === post.authorId)) { %>
-                                    <button class="btn text-danger" onclick="deleteComment(this, '<%= comment.id %>')">
+                                    <button class="btn btn-sm text-danger" onclick="deleteComment(this, '<%= comment.id %>')">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 <% } %>

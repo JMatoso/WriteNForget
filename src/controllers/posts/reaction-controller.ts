@@ -71,3 +71,13 @@ export const deleteComment = async (req: Request, res: Response) => {
 
     res.json({ success: true, message: result.message })
 }
+
+export const reactComment = async (req: Request, res: Response) => {
+    const result = await postRepository.reactComment(req.params.id)
+    if (result.type !== MessageType.Success) {
+        res.json({ success: false, message: result.message })
+        return
+    }
+
+    res.json({ success: true, message: result.message })
+}

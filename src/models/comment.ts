@@ -4,13 +4,15 @@ export class Comment {
     id: string;
     text: string;
     postId: string;
+    reacts: number
     authorId: string;
     authorNickname: string;
     createdAt: Date;
-    constructor(id: string, text: string, postId: string, authorId: string, authorNickname: string, createdAt: Date) {
+    constructor(id: string, text: string, postId: string, reacts: number, authorId: string, authorNickname: string, createdAt: Date) {
         this.id = id;
         this.text = text;
         this.postId = postId;
+        this.reacts = reacts;
         this.authorId = authorId;
         this.createdAt = createdAt;
         this.authorNickname = authorNickname;

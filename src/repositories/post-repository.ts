@@ -1,4 +1,4 @@
-import { PagedPosts, Post } from '../models/post'
+import { PagedPosts, Post, UpdatePost } from '../models/post'
 import { Result } from '../models/result'
 import { Comment, PagedComments } from "../models/comment"
 import prismaClient from '../data/prismaClient'
@@ -10,7 +10,7 @@ import { Pagination } from '../models/pagination'
 const categoryRepository = new CategoryRepository()
 
 export class PostRepository {
-    async createOrUpdate(title: string, content: string, published: boolean, authorId: string, category: string, tags: string, id?: string)
+    async create(title: string, content: string, published: boolean, authorId: string, category: string, tags: string, id?: string)
         : Promise<Result> {
         try {
             const existingCategory = await categoryRepository.findExistingCategory(category)
@@ -43,6 +43,82 @@ export class PostRepository {
         } catch (error) {
             console.error(error)
             return Result.setError('Error saving your thought')
+        }
+    }
+
+    async findPostToEdit(postId: string, userId: string): Promise<UpdatePost | null> {
+        try {
+            const post = await prismaClient.post.findFirst({
+                where: {
+                    id: postId,
+                    authorId: userId
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    content: true,
+                    published: true,
+                    hashtags: true,
+                    category: {
+                        select: {
+                            name: true
+                        }
+                    }
+                }
+            })
+
+            return post
+                ? new UpdatePost(
+                    post.id,
+                    post.title,
+                    post.content as string,
+                    post.category.name,
+                    post.hashtags,
+                    post.published)
+                : null
+        }
+        catch (error) {
+            console.error(error)
+            return null
+        }
+    }
+
+    async update(postId: string, title: string, content: string, published: boolean, authorId: string, category: string, tags: string): Promise<Result> {
+        try {
+            const existingCategory = await categoryRepository.findExistingCategory(category)
+            let categoryId = existingCategory?.id
+
+            if (!existingCategory) {
+                const newCategory = await prismaClient.category.create({
+                    data: { name: capitalizeFirstLetters(category) },
+                })
+                categoryId = newCategory.id
+            }
+
+            const hashtags = tagtize(tags)
+            const friendlyUrl = createFriendlyUrl(title)
+            const isPublished = published.toString() === 'true' ? true : false
+
+            await prismaClient.post.update({
+                where: {
+                    id: postId,
+                    authorId
+                },
+                data: {
+                    title: capitalizeFirstLetters(title),
+                    content,
+                    published: isPublished,
+                    slug: friendlyUrl,
+                    hashtags,
+                    categoryId: categoryId as string,
+                }
+            })
+
+            return Result.setSuccess('Thought updated successfully')
+        }
+        catch (error) {
+            console.error(error)
+            return Result.setError('Error updating thought')
         }
     }
 
@@ -164,6 +240,7 @@ export class PostRepository {
                             id: true,
                             text: true,
                             authorId: true,
+                            reacts: true,
                             author: {
                                 select: {
                                     nickname: true
@@ -180,7 +257,7 @@ export class PostRepository {
             })
 
             const comments = post?.comments.map(comment =>
-                new Comment(comment.id, comment.text, post.id, comment.authorId, comment.author.nickname, comment.createdAt))
+                new Comment(comment.id, comment.text, post.id, comment.reacts, comment.authorId, comment.author.nickname, comment.createdAt))
 
             return post
                 ? new Post(
@@ -287,14 +364,32 @@ export class PostRepository {
                 }
             })
 
-            return new Comment(comment.id, comment.text, postId, userId, '', comment.createdAt)
+            return new Comment(comment.id, comment.text, postId, comment.reacts, userId, '', comment.createdAt)
         } catch (error) {
             console.error(error)
             return null
         }
     }
 
-    // todo: like comment
+    async reactComment(commentId: string): Promise<Result> {
+        try {
+            await prismaClient.comment.update({
+                where: {
+                    id: commentId
+                },
+                data: {
+                    reacts: {
+                        increment: 1
+                    }
+                }
+            })
+
+            return Result.setSuccess('Comment liked successfully')
+        } catch (error) {
+            console.error(error)
+            return Result.setError('Error liking comment')
+        }
+    }
 
     async removeComment(commentId: string, userId: string): Promise<Result> {
         try {
@@ -327,6 +422,7 @@ export class PostRepository {
                     authorId: true,
                     postId: true,
                     text: true,
+                    reacts: true,
                     createdAt: true,
                     author: {
                         select: {
@@ -348,7 +444,7 @@ export class PostRepository {
             })
 
             const pagination = new Pagination(page, limit, totalComments)
-            const pagedComments = comments.map(comment => new Comment(comment.id, comment.text, comment.postId, comment.authorId, comment.author.nickname, comment.createdAt))
+            const pagedComments = comments.map(comment => new Comment(comment.id, comment.text, comment.postId, comment.reacts, comment.authorId, comment.author.nickname, comment.createdAt))
             return new PagedComments(pagedComments, pagination)
         } catch (error) {
             console.error(error)

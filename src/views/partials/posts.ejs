@@ -26,7 +26,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <% if(locals.user && locals.user.id === post.authorId) { %> 
-                                <li><a class="dropdown-item" href="/edit/<%= post.slug %>">Edit</a></li>
+                                <li><a class="dropdown-item" href="/write/<%= post.id %>">Edit</a></li>
                                 <li><a class="dropdown-item text-danger" href="/delete/<%= post.id %>">Delete</a></li>
                                 <% if (!post.published) { %>
                                     <li><button class="dropdown-item" onclick="publish(this, '<%= post.id %>')">Publish</button></li>

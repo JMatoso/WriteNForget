@@ -255,6 +255,7 @@ a.badge:hover {
 }
 
 .ck.ck-content {
+  color: #000;
   padding: 10px !important;
   min-height: 100%;
 }
