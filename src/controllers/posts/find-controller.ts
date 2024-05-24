@@ -7,14 +7,14 @@ const postRepository = new PostRepository()
 const userRepository = new UserRepository()
 
 export const search = async (req: Request, res: Response) => {
-    const search: string | undefined = req.query.search as string;
-    const posts = await postRepository.findPosts(search)
-    const users = await userRepository.findByNickname(search)
-
+    const search: string | undefined = req.query.search as string
+    const page = parseInt(req.query.page as string) || 1
+    const posts = await postRepository.findPosts(search, page)
+    const users = await userRepository.findByNickname(search, page)
+    
     res.render('posts/search', { 
         search, 
-        posts, 
-        users,
+        data: { posts, users },
         metaTags: defineMetaTags(req, `Results for '${search}'`)
     })
 }

@@ -1,3 +1,6 @@
+import { Comment } from "./comment"
+import { Pagination } from "./pagination"
+
 export class Post {
     id: string
     title: string
@@ -13,7 +16,22 @@ export class Post {
     numberOfComments: number
     readingTime: number
     numberOfReactions: number
-    constructor(id: string, title: string, content: string, published: boolean, authorNickname: string, authorId: string, createdAt: Date, views: number, categoryName: string, slug: string, hashtags: string[], numberOfComments: number, readingTime: number, numberOfReactions: number) {
+    comments?: Comment[]
+    constructor(id: string, 
+                title: string, 
+                content: string, 
+                published: boolean, 
+                authorNickname: string, 
+                authorId: string, 
+                createdAt: Date, 
+                views: number, 
+                categoryName: string, 
+                slug: string, 
+                hashtags: string[], 
+                numberOfComments: number, 
+                readingTime: number, 
+                numberOfReactions: number,
+                comments?: Comment[]) {
         this.id = id
         this.title = title
         this.content = content
@@ -28,6 +46,7 @@ export class Post {
         this.numberOfComments = numberOfComments
         this.readingTime = readingTime
         this.numberOfReactions = numberOfReactions
+        this.comments = comments
     }
 }
 
@@ -38,4 +57,13 @@ export interface CreatePost {
     category: string
     tags: string
     published: boolean
+}
+
+export class PagedPosts {
+    posts: Post[]
+    pagination: Pagination
+    constructor(posts: Post[], pagination: Pagination) {
+        this.posts = posts
+        this.pagination = pagination
+    }
 }

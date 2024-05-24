@@ -1,57 +1,38 @@
-<div class="d-flex justify-content-between">
-    <div>
-        <button type="button" class="btn btn">
-            <i class="fa-regular fa-comment"></i> 
-            <span class="badge text-bg-light fw-x-normal">
-                <%= numeral(post.numberOfComments).format('0a') %>
-            </span>
-        </button>
-    
-        <button type="button" class="btn btn">
-            <i class="fa-regular fa-star"></i> 
-            <span class="badge text-bg-light fw-x-normal">
-                <%= numeral(post.numberOfReactions).format('0a') %>
-            </span>
-        </button>
-    
-        <% if(locals.user && locals.user.id === post.authorId) { %>
-            <% if (post.published) { %>
-                <button type="button" class="btn border-0 no-pointer" 
-                        data-bs-toggle="tooltip" 
-                        data-bs-placement="top"
-                        data-bs-custom-class="custom-tooltip"
-                        data-bs-title="Number of Views in This Post">
-                    <i class="fa-regular fa-eye"></i>
-                    <span class="badge text-bg-light fw-x-normal">
-                        <%= numeral(post.views).format('0a') %>
-                    </span>
-                </button>
-            <% } else { %>
-                <button type="button" class="btn border-0 no-pointer" 
-                            data-bs-toggle="tooltip" 
-                            data-bs-placement="top"
-                            data-bs-custom-class="custom-tooltip"
-                            data-bs-title="This Post is Private">
-                        <i class="fa-regular fa-eye-slash"></i>
-                    </button>
-            <% } %>
-        <% } %>
-    </div>
-    <div>
-        <div class="dropdown">
-            <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                <i class="fa-solid fa-ellipsis"></i>
+<div>
+    <button type="button" class="btn" onclick="location .href='/read/<%= post.slug %>'">
+        <i class="fa-regular fa-comment"></i> 
+        <small class="fw-x-normal fs-small">
+            <%= numeral(post.numberOfComments).format('0a') %>
+        </small>
+    </button>
+
+    <button type="button" class="btn" <% if(locals.user) {  %> onclick="react(this, '<%= post.id %>')" <% } %>>
+        <i class="fa-regular fa-star"></i> 
+        <small class="fw-x-normal fs-small" id="<%= post.id %>">
+            <%= numeral(post.numberOfReactions).format('0a') %>
+        </small>
+    </button>
+
+    <% if(locals.user && locals.user.id === post.authorId) { %>
+        <% if (post.published) { %>
+            <button type="button" class="btn border-0 no-pointer" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="top"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Number of Views in This Post">
+                <i class="fa-regular fa-eye"></i>
+                <small class="fw-x-normal fs-small">
+                    <%= numeral(post.views).format('0a') %>
+                </small>
             </button>
-            <ul class="dropdown-menu">
-                <% if(locals.user && locals.user.id === post.authorId) { %> 
-                    <li><a class="dropdown-item" href="/edit/<%= post.slug %>">Edit</a></li>
-                    <li><a class="dropdown-item text-danger" href="/delete/<%= post.id %>">Delete</a></li>
-                    <% if (!post.published) { %>
-                        <li><a class="dropdown-item" href="#">Publish</a></li>
-                    <% } %>
-                <% } %>
-                <li><a class="dropdown-item pointer" onclick="copyLinkToClipBoard('/read/<%= post.slug %>')">Copy Link</a></li>
-            </ul>
-          </div>
-    </div>
+        <% } else { %>
+            <button type="button" class="btn border-0 no-pointer" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="top"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="This Post is Private">
+                <i class="fa-regular fa-eye-slash"></i>
+            </button>
+        <% } %>
+    <% } %>
 </div>

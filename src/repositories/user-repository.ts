@@ -1,9 +1,10 @@
-import { capitalizeFirstLetters } from '../helpers/string-helper'
-import { TinyUser, SavedUser, UserWithPosts } from '../models/user'
+import { calculateReadingTime, capitalizeFirstLetters } from '../helpers/string-helper'
+import { TinyUser, SavedUser, UserWithPosts, PagedTinyUsers, PagedUsersWithPosts } from '../models/user'
 import prismaClient from '../data/prismaClient'
 import { Result } from '../models/result'
 import { Post } from '../models/post'
 import bcrypt from 'bcryptjs'
+import { Pagination } from '../models/pagination'
 
 export class UserRepository {
     async create(nickname: string, email: string, password: string): Promise<Result> {
@@ -101,7 +102,7 @@ export class UserRepository {
         }
     }
 
-    async findByIdWithPosts(id: string, limit: number = 10, page: number = 1): Promise<UserWithPosts | null> {
+    async findByIdWithPosts(id: string, page: number = 1, limit: number = 10): Promise<PagedUsersWithPosts | null> {
         try {
             const user = await prismaClient.user.findFirst({
                 select: {
@@ -127,6 +128,11 @@ export class UserRepository {
                             views: true,
                             slug: true,
                             hashtags: true,
+                            category: {
+                                select: {
+                                    name: true
+                                }
+                            },
                             _count: {
                                 select: {
                                     comments: true,
@@ -151,16 +157,26 @@ export class UserRepository {
                 return null
             }
 
+            const totalUserPosts = await prismaClient.post.count({
+                where: {
+                    authorId: id,
+                    published: true,
+                    isDeleted: false
+                }
+            })
+
+            const pagination = new Pagination(page, totalUserPosts, limit)
             const posts = user.posts.map(post => 
-                new Post(post.id, post.title, post.content as string, post.published, user.nickname, user.id, post.createdAt, post.views, '', post.slug, post.hashtags.split(','), post._count.comments, 0, post._count.reactions))
-            return new UserWithPosts(new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string), posts)
+                new Post(post.id, post.title, post.content as string, post.published, user.nickname, user.id, post.createdAt, post.views, post.category.name, post.slug, post.hashtags.split(','), post._count.comments, calculateReadingTime(post.content as string), post._count.reactions))
+            const pagedUser = new UserWithPosts(new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string), posts)
+            return new PagedUsersWithPosts(pagedUser, pagination)
         } catch (error) {
             console.error(error)
             return null
         }
     }
 
-    async findByNickname(nickname: string): Promise<TinyUser[]> {
+    async findByNickname(nickname: string, page: number = 1, limit: number = 15): Promise<PagedTinyUsers | null> {
         try {
             const users = await prismaClient.user.findMany({
                 select: {
@@ -179,13 +195,27 @@ export class UserRepository {
                         mode: 'insensitive'
                     },
                     isDeleted: false
+                },
+                skip: (page - 1) * limit,
+                take: limit
+            })
+
+            const totalUsers = await prismaClient.user.count({
+                where: {
+                    nickname: { 
+                        contains: nickname,
+                        mode: 'insensitive'
+                    },
+                    isDeleted: false
                 }
             })
 
-            return users.map(user => new TinyUser(user.id, user.nickname, user.bio as string))
+            const pagination = new Pagination(page, totalUsers, limit)
+            const pagedUsers = users.map(user => new TinyUser(user.id, user.nickname, user.bio as string))
+            return new PagedTinyUsers(pagedUsers, pagination)
         } catch (error) {
             console.error(error)
-            return []
+            return null
         }
     }
 

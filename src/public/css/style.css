@@ -69,6 +69,15 @@ html {
   font-size: 9pt;
 }
 
+.fs-x-small {
+  font-size: 10pt;
+}
+
+.bg-light-2 {
+  color: #000;
+  background-color: #F2F2F2;
+}
+
 .text-truncate-x {
   display: -webkit-box;
   -webkit-box-orient: vertical;

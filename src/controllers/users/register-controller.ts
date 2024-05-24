@@ -2,10 +2,12 @@ import { Request, Response } from 'express'
 import { MessageType } from '../../types/message-types'
 import { defineMetaTags } from '../../helpers/request-helper'
 import { UserRepository } from '../../repositories/user-repository'
+import { PostRepository } from '../../repositories/post-repository'
 import { RegisterUser, SavedUser, UpdateUser } from '../../models/user'
 import { CategoryRepository } from '../../repositories/category-repository'
 
 const userRepository = new UserRepository()
+const postRepository = new PostRepository()
 const categoryRepository = new CategoryRepository()
 
 export const createUser = async (req: Request<{}, {}, RegisterUser>, res: Response) => {
@@ -58,8 +60,10 @@ export const author = async (req: Request, res: Response) => {
         }
     }
 
+    const page = parseInt(req.query.page as string) || 1
     const categories = await categoryRepository.findInterests(id)
-    const userWithPosts = await userRepository.findByIdWithPosts(id)
+    const postsCount = await postRepository.countUserPosts(id)
+    const userWithPosts = await userRepository.findByIdWithPosts(id, page)
 
     if (!userWithPosts) {
         res.redirect('/notfound')
@@ -67,9 +71,9 @@ export const author = async (req: Request, res: Response) => {
     }
 
     res.render('user/author', { 
-        metaTags: defineMetaTags(req, userWithPosts.user.nickname, userWithPosts.user.nickname, userWithPosts.user.bio),  
-        author: userWithPosts.user,
-        posts: userWithPosts.posts,
+        metaTags: defineMetaTags(req, userWithPosts.data.user.nickname, userWithPosts.data.user.nickname, userWithPosts.data.user.bio),  
+        data: userWithPosts,
+        postsCount,
         categories
     })
 }

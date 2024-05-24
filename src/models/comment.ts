@@ -1,3 +1,5 @@
+import { Pagination } from "./pagination";
+
 export class Comment {
     id: string;
     text: string;
@@ -19,4 +21,13 @@ export interface CreateComment {
     text: string
     postId: string
     authorId: string
+}
+
+export class PagedComments {
+    comments: Comment[]
+    pagination: Pagination
+    constructor(comments: Comment[], pagination: Pagination) {
+        this.comments = comments
+        this.pagination = pagination
+    }
 }

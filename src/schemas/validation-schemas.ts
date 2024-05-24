@@ -14,7 +14,7 @@ export const updateUserSchema = z.object({
 
 export const createPostSchema = z.object({
   title: z.string().min(2).max(255),
-  content: z.string().min(2),
+  content: z.string().optional(),
   category: z.string().min(2),
   tags: z.string().min(2),
 })

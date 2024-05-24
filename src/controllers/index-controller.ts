@@ -10,13 +10,12 @@ const categoryRepository = new CategoryRepository()
 
 export const index = async (req: Request, res: Response) => {
     const categories = await categoryRepository.findMany()
-    const posts = await postRepository.findRecommendedPosts()
+    const page = parseInt(req.query.page as string) || 1
+    const posts = await postRepository.findRecommendedPosts(page)
     let userId = req.isAuthenticated() ? (req.user as any).id : ''
     const users = await userRepository.findUsersWithMostPosts(userId)
     res.render('index', { 
-        posts, 
-        users,
-        categories,
+        data: { posts, users, categories },
         metaTags: defineMetaTags(req, 'Thoughts') 
     })
 }

@@ -1,10 +1,11 @@
-import { Post } from '../models/post'
+import { PagedPosts, Post } from '../models/post'
 import { Result } from '../models/result'
-import { Comment } from "../models/comment"
+import { Comment, PagedComments } from "../models/comment"
 import prismaClient from '../data/prismaClient'
 import { ReactionType } from '../types/reaction-types'
 import { CategoryRepository } from './category-repository'
 import { createFriendlyUrl, tagtize, calculateReadingTime, capitalizeFirstLetters } from '../helpers/string-helper'
+import { Pagination } from '../models/pagination'
 
 const categoryRepository = new CategoryRepository()
 
@@ -22,18 +23,16 @@ export class PostRepository {
                 categoryId = newCategory.id
             }
 
-            const isPublished = published as boolean
-            console.log(isPublished)
-
             const hashtags = tagtize(tags)
             const friendlyUrl = createFriendlyUrl(title)
+            const isPublished = published.toString() === 'true' ? true : false
 
             await prismaClient.post.create({
                 data: {
                     title: capitalizeFirstLetters(title),
                     content,
                     authorId,
-                    published: published,
+                    published: isPublished,
                     slug: friendlyUrl,
                     hashtags,
                     categoryId: categoryId as string,
@@ -64,7 +63,7 @@ export class PostRepository {
         }
     }
 
-    async findUserPosts(userId: string, limit: number = 10, page: number = 1): Promise<Post[]> {
+    async findUserPosts(userId: string, page: number = 1, limit: number = 10): Promise<PagedPosts | null> {
         try {
             const posts = await prismaClient.post.findMany({
                 where: {
@@ -105,7 +104,15 @@ export class PostRepository {
                 skip: limit * (page - 1)
             })
 
-            return posts.map(post => new Post(
+            const totalPosts = await prismaClient.post.count({
+                where: {
+                    authorId: userId,
+                    isDeleted: false
+                },
+            })
+
+            const pagination = new Pagination(page, limit, totalPosts)
+            const pagedPosts = posts.map(post => new Post(
                 post.id,
                 post.title,
                 post.content as string,
@@ -120,9 +127,11 @@ export class PostRepository {
                 post._count.comments,
                 calculateReadingTime(post.content as string),
                 post._count.reactions))
+
+            return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
             console.error(error)
-            return []
+            return null
         }
     }
 
@@ -149,9 +158,29 @@ export class PostRepository {
                         select: {
                             nickname: true
                         }
+                    },
+                    comments: {
+                        select: {
+                            id: true,
+                            text: true,
+                            authorId: true,
+                            author: {
+                                select: {
+                                    nickname: true
+                                }
+                            },
+                            createdAt: true,
+                        },
+                        orderBy: {
+                            createdAt: 'desc'
+                        },
+                        take: 10,
                     }
                 }
             })
+
+            const comments = post?.comments.map(comment => 
+                new Comment(comment.id, comment.text, post.id, comment.authorId, comment.author.nickname, comment.createdAt))
 
             return post
                 ? new Post(
@@ -168,7 +197,8 @@ export class PostRepository {
                     post.hashtags.split(','),
                     post._count.comments,
                     calculateReadingTime(post.content as string),
-                    post._count.reactions)
+                    post._count.reactions,
+                    comments)
                 : null
         } catch (error) {
             console.error(error)
@@ -194,7 +224,7 @@ export class PostRepository {
 
     async addReaction(postId: string, userId: string, type: ReactionType): Promise<Result> {
         try {
-            const existingReaction = await prismaClient.reaction.findFirst({
+            /*const existingReaction = await prismaClient.reaction.findFirst({
                 where: {
                     postId,
                     authorId: userId
@@ -203,7 +233,7 @@ export class PostRepository {
 
             if (existingReaction) {
                 return Result.setError('Reaction already exists')
-            }
+            }*/
 
             await prismaClient.reaction.create({
                 data: {
@@ -279,7 +309,7 @@ export class PostRepository {
         }
     }
 
-    async findComments(postId: string, limit: number = 30, page: number = 1): Promise<Comment[]> {
+    async findComments(postId: string, limit: number = 30, page: number = 1): Promise<PagedComments | null> {
         try {
             const comments = await prismaClient.comment.findMany({
                 where: {
@@ -304,14 +334,22 @@ export class PostRepository {
                 skip: limit * (page - 1),
             })
 
-            return comments.map(comment => new Comment(comment.id, comment.text, comment.postId, comment.authorId, comment.author.nickname, comment.createdAt))
+            const totalComments = await prismaClient.comment.count({
+                where: {
+                    postId
+                }
+            })
+
+            const pagination = new Pagination(page, limit, totalComments)
+            const pagedComments = comments.map(comment => new Comment(comment.id, comment.text, comment.postId, comment.authorId, comment.author.nickname, comment.createdAt))
+            return new PagedComments(pagedComments, pagination)
         } catch (error) {
             console.error(error)
-            return []
+            return null
         }
     }
 
-    async findRecentPosts(limit: number = 15, page: number = 1): Promise<Post[]> {
+    async findRecentPosts(limit: number = 15, page: number = 1): Promise<PagedPosts | null> {
         try {
             const posts = await prismaClient.post.findMany({
                 where: {
@@ -352,7 +390,15 @@ export class PostRepository {
                 skip: limit * (page - 1)
             })
 
-            return posts.map(post => new Post(
+            const totalPosts = await prismaClient.post.count({
+                where: {
+                    isDeleted: false,
+                    published: true,
+                },
+            })
+
+            const pagination = new Pagination(page, limit, totalPosts)
+            const pagedPosts = posts.map(post => new Post(
                 post.id,
                 post.title,
                 post.content as string,
@@ -367,13 +413,15 @@ export class PostRepository {
                 post._count.comments,
                 calculateReadingTime(post.content as string),
                 post._count.reactions))
+            
+            return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
             console.error(error)
-            return []
+            return null
         }
     }
 
-    async findPopularPosts(limit: number = 15, page: number = 1): Promise<Post[]> {
+    async findPopularPosts(limit: number = 15, page: number = 1): Promise<PagedPosts | null> {
         try {
             const posts = await prismaClient.post.findMany({
                 where: {
@@ -425,7 +473,15 @@ export class PostRepository {
                 skip: limit * (page - 1)
             })
 
-            return posts.map(post => new Post(
+            const totalPosts = await prismaClient.post.count({
+                where: {
+                    isDeleted: false,
+                    published: true,
+                },
+            })
+
+            const pagination = new Pagination(page, limit, totalPosts)
+            const pagedPosts = posts.map(post => new Post(
                 post.id,
                 post.title,
                 post.content as string,
@@ -440,21 +496,24 @@ export class PostRepository {
                 post._count.comments,
                 calculateReadingTime(post.content as string),
                 post._count.reactions))
+            
+            return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
             console.error(error)
-            return []
+            return null
         }
     }
 
-    async findPosts(search: string, limit: number = 30, page: number = 1, postId?: string): Promise<Post[]> {
+    async findPosts(search: string, page: number = 1, limit: number = 30, postId?: string): Promise<PagedPosts | null> {
         try {
             const posts = await prismaClient.post.findMany({
                 where: {
                     OR: [
-                        { title: { contains: search } },
-                        { content: { contains: search } },
-                        { hashtags: { contains: search } },
-                        { category: { name: { contains: search } } }
+                        { title: { contains: search, mode: 'insensitive' } },
+                        { content:{ contains: search, mode: 'insensitive' } },
+                        { hashtags: { contains: search, mode: 'insensitive' } },
+                        { category: { name: { contains: search, mode: 'insensitive' } } },
+                        { author: { nickname: { contains: search, mode: 'insensitive' } } }
                     ],
                     published: true,
                     isDeleted: false,
@@ -496,7 +555,24 @@ export class PostRepository {
                 skip: limit * (page - 1)
             })
 
-            return posts.map(post => new Post(
+            const totalPosts = await prismaClient.post.count({
+                where: {
+                    OR: [
+                        { title: { contains: search } },
+                        { content: { contains: search } },
+                        { hashtags: { contains: search } },
+                        { category: { name: { contains: search } } }
+                    ],
+                    published: true,
+                    isDeleted: false,
+                    id: {
+                        not: postId
+                    }
+                },
+            })
+
+            const pagination = new Pagination(page, limit, totalPosts)
+            const pagedPosts = posts.map(post => new Post(
                 post.id,
                 post.title,
                 post.content as string,
@@ -511,27 +587,30 @@ export class PostRepository {
                 post._count.comments,
                 calculateReadingTime(post.content as string),
                 post._count.reactions))
+
+            return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
             console.error(error)
-            return []
+            return null
         }
     }
 
-    async findRecommendedPosts(limit: number = 15, page: number = 1): Promise<Post[]> {
+    async findRecommendedPosts(page: number = 1, limit: number = 15): Promise<PagedPosts | null> {
         try {
             const recentPosts = await this.findRecentPosts(limit, page)
             const popularPosts = await this.findPopularPosts(limit, page)
 
             if (recentPosts === null || popularPosts === null) {
-                return []
+                return null
             }
 
-            const recommendedPosts = [...recentPosts, ...popularPosts]
-            const postMap = new Map(recommendedPosts.map(post => [post.id, post]));
-            return Array.from(postMap.values())
+            const recommendedPosts = [...recentPosts.posts, ...popularPosts.posts]
+            const pagination = recentPosts.pagination.update(popularPosts.pagination.total)
+            const postMap = new Map(recommendedPosts.map(post => [post.id, post]))
+            return new PagedPosts([...postMap.values()], pagination)
         } catch (error) {
             console.error(error)
-            return []
+            return null
         }
     }
 
@@ -554,6 +633,23 @@ export class PostRepository {
         } catch (error) {
             console.error(error)
             return Result.setError('Error incrementing views')
+        }
+    }
+
+    async publish(postId: string, userId: string): Promise<Result> {
+        try {
+            await prismaClient.post.update({
+                where: { 
+                    id: postId, 
+                    authorId: userId 
+                },
+                data: { published: true }
+            })
+
+            return Result.setSuccess('Thought published successfully')
+        } catch (error) {
+            console.error(error)
+            return Result.setError('Error publishing thought')
         }
     }
 }

@@ -1,10 +1,10 @@
 export function createFriendlyUrl(title: string): string {
-    let friendlyUrl = title.toLowerCase();
-    friendlyUrl = friendlyUrl.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    friendlyUrl = friendlyUrl.replace(/\s+/g, '-');
-    friendlyUrl = friendlyUrl.replace(/[^a-z0-9-]/g, '');
-    friendlyUrl = friendlyUrl.replace(/-+/g, '-');
-    friendlyUrl = friendlyUrl.replace(/^-|-$/g, '');
+    let friendlyUrl = title.toLowerCase()
+    friendlyUrl = friendlyUrl.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    friendlyUrl = friendlyUrl.replace(/\s+/g, '-')
+    friendlyUrl = friendlyUrl.replace(/[^a-z0-9-]/g, '')
+    friendlyUrl = friendlyUrl.replace(/-+/g, '-')
+    friendlyUrl = friendlyUrl.replace(/^-|-$/g, '')
 
     return `${friendlyUrl}-${new Date().getTime()}`
 }
@@ -32,5 +32,5 @@ export function calculateReadingTime(text?: string, wordsPerMinute = 150): numbe
 }
 
 export function capitalizeFirstLetters(str: string): string {
-    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 }

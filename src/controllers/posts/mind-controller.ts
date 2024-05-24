@@ -9,12 +9,13 @@ const categoryRepository = new CategoryRepository()
 
 export const mind = async (req: Request, res: Response) => {
     const { id, nickname, bio } = req.user as SavedUser
-    const posts = await postRepository.findUserPosts(id)
+    const page = parseInt(req.query.page as string) || 1
+    const postsCount = await postRepository.countUserPosts(id)
+    const posts = await postRepository.findUserPosts(id, page, 10)
     const categories = await categoryRepository.findInterests(id)
     res.render('user/mind', { 
         metaTags: defineMetaTags(req, 'My Mind', nickname, bio),
-        categories, 
-        posts
+        data: { posts, categories, postsCount }
     })
 }
 

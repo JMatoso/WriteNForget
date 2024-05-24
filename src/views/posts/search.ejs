@@ -4,22 +4,20 @@
     <div class="col-md-8 border-end">
         <%- include ('../partials/fragments/header.ejs', { 
             title: metaTags.title, 
-            cite: `Showing results (${posts.length})` }) 
+            cite: `Showing results (${data.posts.posts.length})` }) 
         %>
         
         <div class="my-4">
             <%- include ('../partials/alerts.ejs') %>
         </div>
 
-        <%- include ('../partials/posts.ejs') %>
+        <%- include ('../partials/posts.ejs', { data: data.posts }) %>
 
-        <% if(!posts || posts.length <= 0) { %>
+        <% if(!data.posts || data.posts.length <= 0) { %>
             <div class="w-100">
                 <img src="/images/empty.svg" alt="No posts found" class="w-100 h-50" />
             </div>
         <% } %>
-
-        <%- include ('../partials/fragments/pagination.ejs') %>
     </div>
     <div class="col-md-4 position-relative">
         <div class="p-4">
@@ -29,7 +27,7 @@
                 </a>
             <% } %>
             
-            <%- include ('../partials/fragments/users.ejs', { users, title: `Thinkers Found (${users.length})` }) %>
+            <%- include ('../partials/fragments/users.ejs', { users: data.users.users, title: `Thinkers Found (${data.users.users.length})` }) %>
         </div>
     </div>
 </div>

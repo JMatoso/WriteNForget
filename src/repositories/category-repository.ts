@@ -5,42 +5,20 @@ import { Result } from '../models/result'
 export class CategoryRepository {
     async findMany(): Promise<string[]> {
         const categories = await prismaClient.category.findMany({
-            orderBy: { name: 'asc' },
-            select: { 
-                name: true,
-                posts: {
-                    where: {
-                        published: true,
-                        isDeleted: false
-                    },
-                    select: {
-                        hashtags: true
-                    },
-                    take: 50
-                }
-            },
+            orderBy: [
+                { name: 'asc' }, 
+                { posts: { _count: 'desc' } }
+            ],
             where: {
-                isDeleted: false,
-                posts: {
-                    some: {
-                        published: true,
-                        isDeleted: false
-                    }
-                }
-            }
+                isDeleted: false
+            },
+            select: {
+                name: true
+            },
+            take: 15
         })
 
-        const data = categories.reduce((acc, category) => {
-            acc.add(category.name)
-            category.posts.forEach(post => {
-                post.hashtags.split(',').forEach(hashtag => {
-                    acc.add(capitalizeFirstLetters(hashtag.trim()));
-                })
-            })
-            return acc
-        }, new Set())
-        
-        return [...data].sort() as string[]
+        return categories.map(category => category.name)
     }
 
     async findInterests(id: string): Promise<string[]> {
@@ -63,7 +41,7 @@ export class CategoryRepository {
                                 select: { name: true }
                             }
                         },
-                        take: 50
+                        take: 20
                     }
                 },
                 where: {
@@ -96,7 +74,10 @@ export class CategoryRepository {
         try {
             const existingCategory = await prismaClient.category.findFirst({
                 where: {
-                    name: category,
+                    name: {
+                        equals: category,
+                        mode: 'insensitive'
+                    },
                     isDeleted: false
                 },
                 select: {

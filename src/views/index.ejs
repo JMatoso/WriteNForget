@@ -11,8 +11,7 @@
             <%- include ('partials/alerts.ejs') %>
         </div>
 
-        <%- include ('partials/posts.ejs') %>
-        <%- include ('partials/fragments/pagination.ejs') %>
+        <%- include ('partials/posts.ejs', { data: data.posts }) %>
     </div>
     <div class="col-md-4 position-relative">
         <div class="fixed-column bg-white p-4">
@@ -22,8 +21,8 @@
                 </a>
             <% } %>
             
-            <%- include ('partials/fragments/users.ejs', { users, title: 'Top thinkers' }) %>
-            <%- include ('partials/fragments/topics.ejs', { categories, title: 'Recommended Topics' }) %>
+            <%- include ('partials/fragments/users.ejs', { users: data.users, title: 'Top thinkers' }) %>
+            <%- include ('partials/fragments/topics.ejs', { categories: data.categories, title: 'Recommended Topics' }) %>
         </div>
     </div>
 </div>

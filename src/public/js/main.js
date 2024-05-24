@@ -24,8 +24,39 @@ $(function () {
 function copyLinkToClipBoard(relative) {
     const link = window.location.origin + relative
     navigator.clipboard.writeText(link)
-        .then(() => {})
+        .then(() => { })
         .catch((error) => {
             console.error('Error copying link:', error);
         })
+}
+
+async function react(element, id) {
+    try {
+        const response = await fetch('/react/' + id);
+        const data = await response.text()
+
+        console.log(data)
+
+        //element.classList.toggle('text-warning')
+        const spanElement = document.getElementById(id)
+        if (spanElement) {
+            const count = parseInt(spanElement.textContent)
+            spanElement.textContent = count + 1
+        }
+    } catch (error) {
+        console.error('Error loading content:', error)
+    }
+}
+
+async function publish(element, id) {
+    try {
+        const response = await fetch('/publish/' + id)
+        const data = await response.text()
+
+        console.log(data)
+
+        element.disabled = true
+    } catch (error) {
+        console.error('Error loading content:', error)
+    }
 }

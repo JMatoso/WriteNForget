@@ -1,12 +1,12 @@
-<small class="d-block my-3">
-    <a href="/thoughts?search=<%= post.categoryName %>" class="fw-x-normal text-black">
-        <%= post.categoryName %>
-    </a>
-    <small class="text-light">&#xb7;</small>
-    <% if (post.hashtags.length > 0) { %>
-        <% post.hashtags.forEach(tag => { %>
-            <a href="/thoughts?search=<%= tag %>" class="fw-x-normal">
-                #<%= tag %>
-            </a>
-    <% })} %>
-</small>
+<div class="d-flex justify-content-between mt-4">
+    <div class="mt-1 fs-x-small">
+        <a href="/thoughts?search=<%= post.categoryName %>" class="px-3 fs-small badge py-2 me-1 mb-1 fw-x-normal rounded-pill bg-light-2">
+            <%= post.categoryName %>
+        </a>
+        <small class="px-1">&#xb7;</small>
+        <span>
+            <%= post.readingTime %> min read
+        </span>
+    </div>
+    <%- include('../fragments/reactions.ejs', { post: post })  %>
+</div>

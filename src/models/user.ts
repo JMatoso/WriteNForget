@@ -1,3 +1,4 @@
+import { Pagination } from "./pagination"
 import { Post } from "./post"
 
 export class SavedUser {
@@ -49,5 +50,19 @@ export class UserWithPosts {
     constructor(
         public user: SavedUser,
         public posts: Post[]
+    ) {}
+}
+
+export class PagedTinyUsers {
+    constructor(
+        public users: TinyUser[],
+        public pagination: Pagination
+    ) {}
+}
+
+export class PagedUsersWithPosts {
+    constructor(
+        public data: UserWithPosts,
+        public pagination: Pagination
     ) {}
 }
