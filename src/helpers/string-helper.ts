@@ -31,6 +31,7 @@ export function calculateReadingTime(text?: string, wordsPerMinute = 150): numbe
     return Math.ceil(words.length / wordsPerMinute)
 }
 
-export function capitalizeFirstLetters(str: string): string {
+export function capitalizeFirstLetters(text: string): string {
+    const str = text.trim()
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 }

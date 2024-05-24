@@ -1,15 +1,15 @@
 <div>
-    <button type="button" class="btn" onclick="location .href='/read/<%= post.slug %>'">
-        <i class="fa-regular fa-comment"></i> 
-        <small class="fw-x-normal fs-small">
-            <%= numeral(post.numberOfComments).format('0a') %>
+    <button type="button" class="btn" <% if(locals.user) {  %> onclick="react(this, '<%= post.id %>')" <% } %>>
+        <i class="fa-regular fa-lightbulb"></i>
+        <small class="fw-x-normal fs-small" id="<%= post.id %>">
+            <%= numeral(post.numberOfReactions).format('0a') %>
         </small>
     </button>
 
-    <button type="button" class="btn" <% if(locals.user) {  %> onclick="react(this, '<%= post.id %>')" <% } %>>
-        <i class="fa-regular fa-star"></i> 
-        <small class="fw-x-normal fs-small" id="<%= post.id %>">
-            <%= numeral(post.numberOfReactions).format('0a') %>
+    <button type="button" class="btn" onclick="location .href='/read/<%= post.slug %>'">
+        <i class="fa-regular fa-comment-dots"></i>
+        <small class="fw-x-normal fs-small">
+            <%= numeral(post.numberOfComments).format('0a') %>
         </small>
     </button>
 

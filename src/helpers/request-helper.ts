@@ -13,7 +13,7 @@ export function getDefaultImageUrl(req: Request): string {
     return `${getBaseUrl(req)}/images/image.jpg`;
 }
 
-export function defineMetaTags(req: Request, title?: string, author?: string, description?: string, keywords?: string[], image?: string, category?: string)
+export function defineMetaTags(req: Request, title?: string, author?: string, description?: string, keywords?: string[], category?: string,image?: string)
     : MetaTags {
     const metaTags = new MetaTags(getAbsoluteUrl(req))
 

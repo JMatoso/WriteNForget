@@ -54,16 +54,11 @@ export class MetaTags {
             return
         }
 
-        if (description.length > 160) {
-            const plainText = htmlToText(description.substring(0, 160) + '...', {
-                wordwrap: false, 
-                preserveNewlines: false 
-            })
-            this.description = plainText || defaultDescription
-            return
-        }
-
-        this.description = description;
+        const plainText = htmlToText(description.substring(0, 160) + '...', {
+            wordwrap: false, 
+            preserveNewlines: false 
+        })
+        this.description = plainText || defaultDescription
     }
 
     setKeywords(keywords?: string[], category?: string) {

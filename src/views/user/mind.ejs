@@ -11,13 +11,14 @@
         <%- include ('../partials/posts.ejs', { data: data.posts }) %>
     </div>
     <div class="col-md-4 position-relative">
-        <div class="fixed-column bg-white p-4">
+        <div class="fixed-column bg-text-white p-4">
             <%- include ('../partials/fragments/counters.ejs', { followers: 0, postsCount: data.postsCount }) %>
 
             <a href="/mind/edit" class="btn btn-light d-block w-100 mb-4">
                 Edit My Profile
             </a>
 
+            <%- include ('../partials/fragments/posts.ejs', { posts: data.latestReactions, title: 'Latest reactions' }) %>
             <%- include ('../partials/fragments/topics.ejs', { categories: data.categories, title: 'Recommended topics' }) %>
         </div>
     </div>

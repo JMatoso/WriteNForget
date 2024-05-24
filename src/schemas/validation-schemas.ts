@@ -20,9 +20,8 @@ export const createPostSchema = z.object({
 })
 
 export const createCommentSchema = z.object({
-  content: z.string().min(1),
-  postId: z.string().uuid(),
-  authorId: z.string().uuid(),
+  text: z.string().min(1),
+  postId: z.string().uuid()
 })
 
 export const loginSchema = z.object({

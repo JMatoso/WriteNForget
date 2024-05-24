@@ -2,9 +2,10 @@ import { calculateReadingTime, capitalizeFirstLetters } from '../helpers/string-
 import { TinyUser, SavedUser, UserWithPosts, PagedTinyUsers, PagedUsersWithPosts } from '../models/user'
 import prismaClient from '../data/prismaClient'
 import { Result } from '../models/result'
-import { Post } from '../models/post'
+import { Post, TinyPost } from '../models/post'
 import bcrypt from 'bcryptjs'
 import { Pagination } from '../models/pagination'
+import { comment } from '../controllers/posts/reaction-controller'
 
 export class UserRepository {
     async create(nickname: string, email: string, password: string): Promise<Result> {
@@ -166,7 +167,7 @@ export class UserRepository {
             })
 
             const pagination = new Pagination(page, totalUserPosts, limit)
-            const posts = user.posts.map(post => 
+            const posts = user.posts.map(post =>
                 new Post(post.id, post.title, post.content as string, post.published, user.nickname, user.id, post.createdAt, post.views, post.category.name, post.slug, post.hashtags.split(','), post._count.comments, calculateReadingTime(post.content as string), post._count.reactions))
             const pagedUser = new UserWithPosts(new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string), posts)
             return new PagedUsersWithPosts(pagedUser, pagination)
@@ -190,7 +191,7 @@ export class UserRepository {
                     password: false
                 },
                 where: {
-                    nickname: { 
+                    nickname: {
                         contains: nickname,
                         mode: 'insensitive'
                     },
@@ -202,7 +203,7 @@ export class UserRepository {
 
             const totalUsers = await prismaClient.user.count({
                 where: {
-                    nickname: { 
+                    nickname: {
                         contains: nickname,
                         mode: 'insensitive'
                     },
@@ -219,27 +220,107 @@ export class UserRepository {
         }
     }
 
-    async findUsersWithMostPosts(id?: string, limit: number = 3): Promise<TinyUser[]> {
+    async findPopularUsers(id?: string, limit: number = 3): Promise<TinyUser[]> {
         try {
-            const users = await prismaClient.user.findMany({
-                select: {
-                    id: true,
-                    nickname: true,
-                    bio: true
-                },
-                where: {
-                    isDeleted: false,
-                    id: { not: id }
+            const reactionCounts = await prismaClient.reaction.groupBy({
+                by: ['postId'],
+                _count: {
+                    postId: true,
                 },
                 orderBy: {
-                    posts: {
-                        _count: 'desc'
+                    _count: {
+                        postId: 'desc',
                     }
                 },
                 take: limit
             })
 
-            return users.map(user => new TinyUser(user.id, user.nickname, user.bio as string))
+            if (!reactionCounts) { return [] }
+            
+            const topPostIds = reactionCounts.map(reaction => reaction.postId)
+            const posts = await prismaClient.post.findMany({
+                where: {
+                    id: {
+                        in: topPostIds,
+                    },
+                    published: true,
+                    isDeleted: false,
+                },
+                select: {
+                    id: true,
+                    authorId: true,
+                    author: {
+                        select: {
+                            id: true,
+                            nickname: true,
+                            bio: true,
+                        }
+                    }
+                },
+            })
+            
+            const authorReactionCountMap = new Map()
+            reactionCounts.forEach(reaction => {
+                const postId = reaction.postId;
+                const post = posts.find(post => post.id === postId);
+                if (post) {
+                    const authorId = post.authorId;
+                    const count = reaction._count.postId;
+            
+                    if (authorReactionCountMap.has(authorId)) {
+                        authorReactionCountMap.set(authorId, authorReactionCountMap.get(authorId) + count);
+                    } else {
+                        authorReactionCountMap.set(authorId, count);
+                    }
+                }
+            })
+            
+            const sortedAuthors = Array.from(authorReactionCountMap.entries())
+                .sort((a, b) => b[1] - a[1])
+                .map(entry => entry[0])
+            
+            const topAuthors = sortedAuthors.map(authorId => {
+                return posts.find(post => post.authorId === authorId)?.author
+            })
+            
+            console.log(topAuthors);
+            
+            return topAuthors.map(user => new TinyUser(user?.id as string, user?.nickname as string, user?.bio as string))
+        } catch (error) {
+            console.error(error)
+            return []
+        }
+    }
+
+    async findLatestReactions(id: string, limit: number = 3): Promise<TinyPost[]> {
+        try {
+            const posts = await prismaClient.post.findMany({
+                select: {
+                    title: true,
+                    slug: true,
+                    category: {
+                        select: {
+                            name: true
+                        }
+                    }
+                },
+                where: {
+                    reactions: {
+                        some: {
+                            authorId: id
+                        }
+                    },
+                    published: true,
+                    isDeleted: false
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: limit,
+                distinct: ['id']
+            })
+
+            return posts.map(post => new TinyPost(post.title, post.category.name, post.slug))
         } catch (error) {
             console.error(error)
             return []

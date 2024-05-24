@@ -49,9 +49,9 @@ export class PostRepository {
     async delete(postId: string, userId: string): Promise<Result> {
         try {
             await prismaClient.post.update({
-                where: { 
-                    id: postId, 
-                    authorId: userId 
+                where: {
+                    id: postId,
+                    authorId: userId
                 },
                 data: { isDeleted: true }
             })
@@ -179,7 +179,7 @@ export class PostRepository {
                 }
             })
 
-            const comments = post?.comments.map(comment => 
+            const comments = post?.comments.map(comment =>
                 new Comment(comment.id, comment.text, post.id, comment.authorId, comment.author.nickname, comment.createdAt))
 
             return post
@@ -277,9 +277,9 @@ export class PostRepository {
         }
     }
 
-    async addComment(postId: string, userId: string, content: string): Promise<Result> {
+    async addComment(postId: string, userId: string, content: string): Promise<Comment | null> {
         try {
-            await prismaClient.comment.create({
+            var comment = await prismaClient.comment.create({
                 data: {
                     postId,
                     authorId: userId,
@@ -287,19 +287,26 @@ export class PostRepository {
                 }
             })
 
-            return Result.setSuccess('Comment added successfully')
+            return new Comment(comment.id, comment.text, postId, userId, '', comment.createdAt)
         } catch (error) {
             console.error(error)
-            return Result.setError('Error adding comment')
+            return null
         }
     }
 
-    async removeComment(commentId: string): Promise<Result> {
+    // todo: like comment
+
+    async removeComment(commentId: string, userId: string): Promise<Result> {
         try {
             await prismaClient.comment.delete({
                 where: {
-                    id: commentId
+                    id: commentId,
+                    OR: [
+                        { post: { authorId: { equals: userId } } },
+                        { authorId: userId }
+                    ],
                 }
+                
             })
 
             return Result.setSuccess('Comment removed successfully')
@@ -413,7 +420,7 @@ export class PostRepository {
                 post._count.comments,
                 calculateReadingTime(post.content as string),
                 post._count.reactions))
-            
+
             return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
             console.error(error)
@@ -496,7 +503,7 @@ export class PostRepository {
                 post._count.comments,
                 calculateReadingTime(post.content as string),
                 post._count.reactions))
-            
+
             return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
             console.error(error)
@@ -510,7 +517,7 @@ export class PostRepository {
                 where: {
                     OR: [
                         { title: { contains: search, mode: 'insensitive' } },
-                        { content:{ contains: search, mode: 'insensitive' } },
+                        { content: { contains: search, mode: 'insensitive' } },
                         { hashtags: { contains: search, mode: 'insensitive' } },
                         { category: { name: { contains: search, mode: 'insensitive' } } },
                         { author: { nickname: { contains: search, mode: 'insensitive' } } }
@@ -606,19 +613,28 @@ export class PostRepository {
 
             const recommendedPosts = [...recentPosts.posts, ...popularPosts.posts]
             const pagination = recentPosts.pagination.update(popularPosts.pagination.total)
-            const postMap = new Map(recommendedPosts.map(post => [post.id, post]))
-            return new PagedPosts([...postMap.values()], pagination)
+            const mappedPosts = new Map(recommendedPosts.map(post => [post.id, post]))
+            const posts = [...mappedPosts.values()]
+            return new PagedPosts(shufflePosts(posts), pagination)
         } catch (error) {
             console.error(error)
             return null
+        }
+
+        function shufflePosts(posts: Post[]): Post[] {
+            for (let i = posts.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [posts[i], posts[j]] = [posts[j], posts[i]]
+            }
+            return posts
         }
     }
 
     async incrementViews(postId: string, id?: string): Promise<Result> {
         try {
             await prismaClient.post.update({
-                where: { 
-                    id: postId,  
+                where: {
+                    id: postId,
                     isDeleted: false,
                     published: true
                 },
@@ -639,9 +655,9 @@ export class PostRepository {
     async publish(postId: string, userId: string): Promise<Result> {
         try {
             await prismaClient.post.update({
-                where: { 
-                    id: postId, 
-                    authorId: userId 
+                where: {
+                    id: postId,
+                    authorId: userId
                 },
                 data: { published: true }
             })

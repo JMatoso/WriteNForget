@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en" data-bs-theme="light">
+<html class="no-js" lang="en">
 
 <head>
     <%- include ('metas.ejs') %>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css"
+            href="https://cdn.jsdelivr.net/npm/node-snackbar@latest/dist/snackbar.min.css" />
+
         <link rel="stylesheet" href="/css/style.css">
 
         <script src="/js/modernizr.js"></script>
+        <script src="/js/theme.js"></script>
         <script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"
             integrity="sha512-u3fPA7V8qQmhBPNT5quvaXVa1mnnLSXUep5PS1qo5NRzHwG19aHmNJnj1Q8hpA/nBWZtZD4r4AX6YOt5ynLN2g=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <%- include ('icons.ejs') %>
 </head>
 
-<div id="preloader">
+<div id="preloader" class="bg-text-dark">
     <div id="loader" class="dots-fade">
         <div></div>
         <div></div>
@@ -23,7 +27,7 @@
 </div>
 
 <header>
-    <nav class="navbar navbar-expand-lg bg-white border-bottom">
+    <nav class="navbar navbar-expand-lg bg-text-white border-bottom">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
                 <img src="/images/logo.png" alt="WriteNForget Logo" width="35" height="35">
@@ -50,21 +54,19 @@
 
 
                     <div class="btn-group">
-                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                        <button type="button" title="User Dropdown" class="btn btn-warning dropdown-toggle" data-bs-auto-close="outside"
+                            data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                             <%= locals.user.nickname %>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-lg-end">
                             <li><a class="dropdown-item" href="/mind">My Mind</a></li>
-                            <li><a class="dropdown-item" href="#">Blind Mode</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
                         </ul>
                     </div>
-                <% } else { %>
-                    <a class="btn btn-warning" href="/login">Login</a>
-                <% } %>
+                    <% } else { %>
+                        <a class="btn btn-warning" href="/login">Login</a>
+                    <% } %>
             </div>
         </div>
     </nav>

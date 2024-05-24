@@ -1,38 +1,48 @@
 <%- include ('../partials/header.ejs') %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.02.min.css">
 
-<form action="/write" method="POST">    
+<form action="/write" method="POST" class="pb-5">    
     <%- include ('../partials/fragments/headerWithSubmit.ejs', { title: 'Writing a Thought', description: 'Let\'s Forget About It' }) %>
     <%- include ('../partials/alerts.ejs') %>
 
     <div class="form-group mt-3">
         <input type="text" class="editor-company" id="title" placeholder="Title" name="title" required>
     </div>
+
     <div class="row mt-2">
         <div class="col-md-5">
-            <div class="form-group">
-                <input type="text" class="editor-company-footer" placeholder="Hastags (life, hack, school)" id="tags" name="tags" required>
+            <div class="form-group mb-2">
+                <input type="text" class="editor-company-footer" placeholder="Hashtags: life, hack, school" id="tags" name="tags" required>
             </div>
         </div>
         <div class="col-md-5">
-            <div class="form-group">
-                <input type="text" class="editor-company-footer" placeholder="Category" id="category" name="category" required>
+            <div class="form-group mb-3">
+                <input id="autoComplete" 
+                    type="search" 
+                    dir="ltr" 
+                    class="w-100"
+                    placeholder="What's your thought related to?" 
+                    id="category" name="category" required 
+                    spellcheck=false autocorrect="off" autocomplete="off" 
+                    autocapitalize="off" maxlength="2048" tabindex="1">
             </div>
         </div>
         <div class="col-md-2">
-            <div class="form-group">
-                <select class="editor-company-footer" id="published" name="published">
+            <div class="form-group mb-3">
+                <select class="editor-company-footer custom-select" aria-label="Published Thought" id="published" name="published">
                     <option value="true" selected>Public</option>
                     <option value="false">Private</option>
                 </select>
             </div>
         </div>
     </div>
-    <div class="form-group mt-4">
+    <div class="form-group">
         <textarea name="content" id="editor" placeholder="Write your thoughts here"></textarea>
     </div>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 </form>
 
+<script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 
 <script>
@@ -47,6 +57,35 @@
         .catch(error => {
             console.error(error);
         });
+
+    function initAutoCompleteElement() {
+        const autoCompleteJS = new autoComplete({
+                selector: `#autoComplete`,
+                data: {
+                    src: async (query) => {
+                        try {
+                            const source = await fetch(`/fetch-categories`)
+                            return await source.json()
+                        } catch (error) { return error }
+                    }, 
+                    cache: true,
+                },
+                resultItem: {
+                    diacritics: false,
+                    highlight: true,
+                },
+                events: {
+                    input: {
+                        selection: (event) => {
+                            const selection = event.detail.selection.value;
+                            autoCompleteJS.input.value = selection;
+                        }
+                    }
+                }
+            });
+    }
+
+    initAutoCompleteElement();
 </script>
 
 

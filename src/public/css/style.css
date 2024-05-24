@@ -73,6 +73,10 @@ html {
   font-size: 10pt;
 }
 
+.fs-xx-small {
+  font-size: 12pt;
+}
+
 .bg-light-2 {
   color: #000;
   background-color: #F2F2F2;
@@ -105,6 +109,76 @@ html {
   padding: 10px;
 }
 
+.ninja-form {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); */
+
+#comment-button,
+#name-placeholder {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, display 0.3s ease-in-out;
+}
+
+#comment-placeholder {
+  height: 30px;
+  overflow: hidden;
+  transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.ninja-form:focus-within #comment-button,
+.ninja-form:focus-within #name-placeholder {
+  display: block;
+  opacity: 1;
+}
+
+.ninja-form:focus-within #comment-placeholder {
+  height: 100px;
+}
+
+.ninja-form textarea:focus,
+.ninja-form textarea {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.ninja-form label {
+  font-size: 10pt;
+  font-weight: 500;
+}
+
+.scrollable-element {
+  scroll-behavior: smooth;
+}
+
+.scrollable-element::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+.scrollable-element::-webkit-scrollbar-thumb {
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.scrollable-element::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.scrollable-element {
+  scrollbar-width: thin;
+  scrollbar-color: #fff #fff;
+}
+
+.last-no-border div:last-child {
+  border-bottom: none !important;
+}
+
 a {
   text-decoration: none;
   color: #daa402;
@@ -113,6 +187,16 @@ a {
 
 a:hover {
   color: #ffc107;
+}
+
+a.badge:hover {
+  color: #000;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  text-decoration: none;
+  color: #000;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .row-flex {
@@ -129,7 +213,7 @@ a:hover {
 }
 
 .editor-company {
-  padding: 10px 0;
+  padding: 10px 10px;
   border: none;
   outline: none;
   box-shadow: none;
@@ -138,17 +222,31 @@ a:hover {
 }
 
 .editor-company-footer {
-  padding: 0;
-  border: none;
-  outline: none;
-  box-shadow: none;
   width: 100%;
-  font-size: large;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 1rem;
+  color: #747474;
+  border-radius: 4px;
+  border: 1px solid rgba(33, 33, 33, .2);
+  outline: 0;
+}
+
+.editor-company-footer::placeholder {
+  color: rgba(123, 123, 123, .5);
 }
 
 .editor-company::placeholder {
   font-size: xx-large;
   color: #495057;
+}
+
+.autoComplete_wrapper {
+  width: 100%;
+}
+
+.autoComplete_wrapper>ul>li mark {
+  color: #ffc107 !important;
 }
 
 .ck-rounded-corners .ck.ck-editor__editable:not(.ck-editor__nested-editable),
@@ -158,7 +256,6 @@ a:hover {
 
 .ck.ck-content {
   padding: 10px !important;
-  font-size: x-large !important;
   min-height: 100%;
 }
 

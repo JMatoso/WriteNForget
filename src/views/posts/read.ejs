@@ -57,7 +57,7 @@
         </div>
 
         <div class="py-5">
-            <h3 class="text-center">
+            <h3 class="text-center bg-text-black-50 fw-light">
                 <span class="px-2">&#xb7;</span>
                 <span class="px-2">&#xb7;</span>
                 <span class="px-2">&#xb7;</span>
@@ -72,29 +72,49 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="fixed-column bg-white p-4">
-            <h3>Comments</h3>
-            <% post.comments.forEach(comment => { %>
-                <div class="border-bottom py-3">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <span class="fw-bold"><%= comment.authorNickname %></span>
-                            <small class="px-1">&#xb7;</small>
-                            <span class="text-muted"><%= formatDistanceToNow(comment.createdAt, { addSuffix: true }) %></span>
-                        </div>
-                        <div>
-                            <% if(locals.user && locals.user.id === comment.authorId) { %>
-                                <button class="btn" onclick="deleteComment(this, '<%= comment.id %>')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            <% } %>
-                        </div>
+        <div class="fixed-column p-3 scrollable-element">
+            <% if (locals.user) { %>
+                <div class="ninja-form shadow mt-4 mb-5">
+                    <div>
+                        <span class="m-2" id="name-placeholder">
+                            <span class="fs-x-small bg-text-black">Responding as </span>
+                            <label for="comment" class="form-label bg-text-black"><%= locals.user.nickname %></label>
+                        </span>
+                        <input type="hidden" name="_csrf" id="csrfToken" value="<%= csrfToken %>">
+                        <textarea placeholder="What are you thinking?" class="form-control" name="comment" id="comment-placeholder" rows="3"></textarea>
                     </div>
-                    <div class="mt-2">
-                        <p><%= comment.content %></p>
-                    </div>
+                    <button id="comment-button" class="btn btn-sm btn-warning mt-2" 
+                            onclick="comment(this, '<%= post.id %>', '<%= locals.user.nickname %>')">
+                            Respond
+                    </button>
                 </div>
-            <% }) %>
+            <% } %>
+
+            <h6 class="mb-3">Responses (<span id="comment-counter"><%= post.numberOfComments %></span>)</h6>
+
+            <div class="pb-5 mb-3 last-no-border" id="comments-container">
+                <% post.comments.forEach(comment => { %>
+                    <div class="border-bottom pt-3 pb-1" id="<%= comment.id %>">
+                        <div class="d-flex justify-content-between">
+                            <div class="fs-x-small pointer" onclick="location .href='/author/<%= comment.authorId %>'">
+                                <span class="fw-bold d-block"><%= comment.authorNickname %></span>
+                                <span class="bg-text-muted d-block"><%= formatDistanceToNow(comment.createdAt, { addSuffix: true }) %></span>
+                            </div>
+                            <div>
+                                <% if((locals.user && locals.user.id === comment.authorId) || 
+                                    (locals.user && locals.user.id === post.authorId)) { %>
+                                    <button class="btn text-danger" onclick="deleteComment(this, '<%= comment.id %>')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="mt-2 fs-x-small bg-text-black">
+                            <p class="text-break"><%= comment.text %></p>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
         </div>
     </div>
 </div>

@@ -20,7 +20,6 @@ export class Comment {
 export interface CreateComment {
     text: string
     postId: string
-    authorId: string
 }
 
 export class PagedComments {

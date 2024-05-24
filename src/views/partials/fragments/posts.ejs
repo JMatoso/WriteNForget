@@ -1,13 +1,13 @@
-<% if (users.length > 0) { %>
+<% if (posts.length > 0) { %>
     <div class="mb-5">
         <h6 class="mb-2 fw-bold"><%= title %></h6>
-        <% users.forEach(user => { %>
-            <div class="pointer mb-3" onclick="location .href='/author/<%= user.id %>'">
+        <% posts.forEach(post => { %>
+            <div class="pointer mb-3" onclick="location .href='/read/<%= post.slug %>'">
                 <small class="fw-bold bg-text-dark fs-x-small">
-                    <%= user.nickname %>
+                    <%= post.category %>
                 </small>
                 <blockquote class="fw-light text-truncate-2 bg-text-dark d-block">
-                    <%= user.bio %>
+                    <%= post.title %>
                 </blockquote>
             </div>
         <% }) %>

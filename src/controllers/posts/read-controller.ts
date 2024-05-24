@@ -29,7 +29,7 @@ export const read = async (req: Request, res: Response) => {
         res.render('posts/read', { 
             post, 
             data: recommendedPosts,
-            metaTags: defineMetaTags(req, post.title, post.authorNickname ) 
+            metaTags: defineMetaTags(req, post.title, post.authorNickname, post.content, post.hashtags, post.categoryName) 
         })
         return
     }

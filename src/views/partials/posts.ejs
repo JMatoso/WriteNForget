@@ -6,51 +6,54 @@
     </div>
 <% } %>
 
-<% data.posts.forEach(post => { %>
-    <div class="pt-5 pb-4 border-bottom">
-        <div class="d-flex justify-content-between">
-            <div class="fs-x-small mt-2">
-                <span class="pointer fw-x-normal" onclick="location .href='/author/<%= post.authorId %>'">
-                    <%= post.authorNickname %>
-                </span>
-                <small class="px-1">&#xb7;</small>
-                <span class="text-muted">
-                    <%= formatDistanceToNow(post.createdAt, { addSuffix: true }) %>
-                </span>
-            </div>
-            <div>
-                <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                        <i class="fa-solid fa-ellipsis"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <% if(locals.user && locals.user.id === post.authorId) { %> 
-                            <li><a class="dropdown-item" href="/edit/<%= post.slug %>">Edit</a></li>
-                            <li><a class="dropdown-item text-danger" href="/delete/<%= post.id %>">Delete</a></li>
-                            <% if (!post.published) { %>
-                                <li><button class="dropdown-item" onclick="publish(this, '<%= post.id %>')">Publish</button></li>
+<div class="last-no-border">
+    <% data.posts.forEach(post => { %>
+        <div class="pt-5 pb-4 border-bottom">
+            <div class="d-flex justify-content-between">
+                <div class="fs-x-small mt-2">
+                    <span class="pointer fw-x-normal" onclick="location .href='/author/<%= post.authorId %>'">
+                        <%= post.authorNickname %>
+                    </span>
+                    <small class="px-1">&#xb7;</small>
+                    <span class="text-muted">
+                        <%= formatDistanceToNow(post.createdAt, { addSuffix: true }) %>
+                    </span>
+                </div>
+                <div>
+                    <div class="dropdown">
+                        <button class="btn" title="Post Dropdown" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <% if(locals.user && locals.user.id === post.authorId) { %> 
+                                <li><a class="dropdown-item" href="/edit/<%= post.slug %>">Edit</a></li>
+                                <li><a class="dropdown-item text-danger" href="/delete/<%= post.id %>">Delete</a></li>
+                                <% if (!post.published) { %>
+                                    <li><button class="dropdown-item" onclick="publish(this, '<%= post.id %>')">Publish</button></li>
+                                <% } %>
+                                <input type="hidden" name="_csrf" id="csrfToken" value="<%= csrfToken %>">
                             <% } %>
-                        <% } %>
-                        <li><a class="dropdown-item pointer" onclick="copyLinkToClipBoard('/read/<%= post.slug %>')">Copy Link</a></li>
-                    </ul>
+                            <li><a class="dropdown-item pointer" onclick="copyLinkToClipBoard('/read/<%= post.slug %>')">Copy Link</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <h4 class="fw-x-bolder pointer" onclick="location .href='/read/<%= post.slug %>'">
+                    <%= post.title %>
+                </h4>
+    
+                <div class="mb-3 <% if (post.content && post.content.length > 0) { %> mt-3 <% } %>">
+                    <small class="text-truncate-x text-muted fw-x-normal no-image pointer" onclick="location .href='/read/<%= post.slug %>'">
+                        <%- post.content %>
+                    </small>
+    
+                    <%- include('../partials/fragments/tags.ejs', { post: post })  %>
                 </div>
             </div>
         </div>
-        
-        <div class="mt-3">
-            <h4 class="fw-x-bolder pointer" onclick="location .href='/read/<%= post.slug %>'">
-                <%= post.title %>
-            </h4>
+    <% }) %>
+</div>
 
-            <div class="mb-3 <% if (post.content && post.content.length > 0) { %> mt-3 <% } %>">
-                <small class="text-truncate-x text-muted fw-x-normal no-image pointer" onclick="location .href='/read/<%= post.slug %>'">
-                    <%- post.content %>
-                </small>
-
-                <%- include('../partials/fragments/tags.ejs', { post: post })  %>
-            </div>
-        </div>
-    </div>
-<% }) %>
-
-<%- include ('../partials/fragments/pagination.ejs', { pagination: data.pagination }) %>
+<% if (data.posts) { include ('../partials/fragments/pagination.ejs', { pagination: data.pagination }) } %>

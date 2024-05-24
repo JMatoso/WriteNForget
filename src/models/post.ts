@@ -67,3 +67,14 @@ export class PagedPosts {
         this.pagination = pagination
     }
 }
+
+export class TinyPost {
+    title: string
+    category: string
+    slug: string
+    constructor(title: string, category: string, slug: string) {
+        this.title = title
+        this.category = category
+        this.slug = slug
+    }
+}

@@ -61,8 +61,9 @@ export const author = async (req: Request, res: Response) => {
     }
 
     const page = parseInt(req.query.page as string) || 1
-    const categories = await categoryRepository.findInterests(id)
     const postsCount = await postRepository.countUserPosts(id)
+    const categories = await categoryRepository.findInterests(id)
+    const latestReactions = await userRepository.findLatestReactions(id)
     const userWithPosts = await userRepository.findByIdWithPosts(id, page)
 
     if (!userWithPosts) {
@@ -74,6 +75,7 @@ export const author = async (req: Request, res: Response) => {
         metaTags: defineMetaTags(req, userWithPosts.data.user.nickname, userWithPosts.data.user.nickname, userWithPosts.data.user.bio),  
         data: userWithPosts,
         postsCount,
-        categories
+        categories,
+        latestReactions
     })
 }
