@@ -102,6 +102,7 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/views/**/*",
+    "src/views/**/*.ejs",
     "src/public/**/*"
   ],
   "exclude": [

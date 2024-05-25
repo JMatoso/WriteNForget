@@ -78,15 +78,30 @@ app.listen({
     port: PORT,
 }, () => {
     console.log(`\nServer is running on port ${PORT}\n`)
+    recursiveFolderListing(__dirname)
+})
 
-    fs.readdir(path.join(__dirname, 'views'), (err, files) => {
+function recursiveFolderListing(caminho: string) {
+    fs.readdir(caminho, (err, files) => {
         if (err) {
-            console.error(`Error reading '${path.join(__dirname, 'views')}'`, err)
+            console.error(`Erro ao ler '${caminho}'`, err);
             return;
         }
-    
+
         files.forEach((file) => {
-            console.log(file)
-        })
-    })
-})
+            const caminhoCompleto = path.join(caminho, file);
+            fs.stat(caminhoCompleto, (err, stat) => {
+                if (err) {
+                    console.error(`Erro ao obter informações sobre '${caminhoCompleto}'`, err);
+                    return;
+                }
+
+                if (stat.isDirectory()) {
+                    recursiveFolderListing(caminhoCompleto);
+                } else {
+                    console.log(caminhoCompleto);
+                }
+            });
+        });
+    });
+}
