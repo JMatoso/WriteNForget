@@ -61,8 +61,8 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
     next()
 })
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
 
 app.use(appRouter)
@@ -71,9 +71,33 @@ app.use(postRouter)
 app.use(notFound)
 app.use(error)
 
+import fs from 'fs'
+
 app.listen({
     host: '0.0.0.0',
     port: PORT,
 }, () => {
     console.log(`\nServer is running on port ${PORT}\n`)
+    console.log(`> ${__dirname}`)
+    console.log(`> ${path.join(__dirname, 'views')}`)
+    console.log(`> ${path.join(__dirname, 'public')}`)
+    console.log(`> ${path.join(__dirname, 'views', 'index.ejs')}`)
+    
+    fs.access(path.join(__dirname, 'views', 'index.ejs'), fs.constants.F_OK, (err) => {
+        if (err) {
+            console.error('Index not found');
+            return;
+        }
+    
+        console.log('Index found');
+    });
+    
+    fs.access(path.join(__dirname, 'views'), fs.constants.F_OK, (err) => {
+        if (err) {
+            console.error('Views not found');
+            return;
+        }
+    
+        console.log('Views found');
+    });
 })
