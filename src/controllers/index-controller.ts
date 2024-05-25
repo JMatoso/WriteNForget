@@ -4,6 +4,9 @@ import { UserRepository } from '../repositories/user-repository'
 import { PostRepository } from '../repositories/post-repository'
 import { CategoryRepository } from '../repositories/category-repository'
 
+import path from 'path'
+
+
 const userRepository = new UserRepository()
 const postRepository = new PostRepository()
 const categoryRepository = new CategoryRepository()
@@ -14,7 +17,7 @@ export const index = async (req: Request, res: Response) => {
     let userId = req.isAuthenticated() ? (req.user as any).id : ''
     const users = await userRepository.findPopularUsers(userId)
     const categories = await categoryRepository.findMany()
-    res.render('index', { 
+    res.render(path.join(__dirname, '../views/index.ejs'), { 
         data: { posts, users, categories },
         metaTags: defineMetaTags(req, 'Thoughts') 
     })
