@@ -10,7 +10,7 @@ import { Pagination } from '../models/pagination'
 const categoryRepository = new CategoryRepository()
 
 export class PostRepository {
-    async create(title: string, content: string, published: boolean, authorId: string, category: string, tags: string, id?: string)
+    async create(title: string, content: string, published: boolean, authorId: string, category: string, tags: string, canRepost: boolean, id?: string)
         : Promise<Result> {
         try {
             const existingCategory = await categoryRepository.findExistingCategory(category)
@@ -26,6 +26,7 @@ export class PostRepository {
             const hashtags = tagtize(tags)
             const friendlyUrl = createFriendlyUrl(title)
             const isPublished = published.toString() === 'true' ? true : false
+            const isRepostable = canRepost.toString() === 'true' ? true : false
 
             await prismaClient.post.create({
                 data: {
@@ -35,6 +36,7 @@ export class PostRepository {
                     published: isPublished,
                     slug: friendlyUrl,
                     hashtags,
+                    canRepost: isRepostable,
                     categoryId: categoryId as string,
                 }
             })
@@ -63,6 +65,11 @@ export class PostRepository {
                         select: {
                             name: true
                         }
+                    },
+                    parent: {
+                        select: {
+                            slug: true
+                        }
                     }
                 }
             })
@@ -74,7 +81,8 @@ export class PostRepository {
                     post.content as string,
                     post.category.name,
                     post.hashtags,
-                    post.published)
+                    post.published,
+                    post.parent ? true : false)
                 : null
         }
         catch (error) {
@@ -83,7 +91,7 @@ export class PostRepository {
         }
     }
 
-    async update(postId: string, title: string, content: string, published: boolean, authorId: string, category: string, tags: string): Promise<Result> {
+    async update(postId: string, title: string, content: string, published: boolean, authorId: string, category: string, tags: string, canRepost: boolean): Promise<Result> {
         try {
             const existingCategory = await categoryRepository.findExistingCategory(category)
             let categoryId = existingCategory?.id
@@ -98,21 +106,28 @@ export class PostRepository {
             const hashtags = tagtize(tags)
             const friendlyUrl = createFriendlyUrl(title)
             const isPublished = published.toString() === 'true' ? true : false
+            const isRepostable = canRepost.toString() === 'true' ? true : false
 
-            await prismaClient.post.update({
+            const post = await prismaClient.post.update({
                 where: {
                     id: postId,
-                    authorId
+                    authorId,
+                    parentId: null
                 },
                 data: {
                     title: capitalizeFirstLetters(title),
                     content,
                     published: isPublished,
                     slug: friendlyUrl,
+                    canRepost: isRepostable,
                     hashtags,
                     categoryId: categoryId as string,
                 }
             })
+
+            if (!post) {
+                return Result.setError('Thought cannot be edited')
+            }
 
             return Result.setSuccess('Thought updated successfully')
         }
@@ -153,6 +168,12 @@ export class PostRepository {
                     published: true,
                     authorId: true,
                     createdAt: true,
+                    canRepost: true,
+                    parent: {
+                        select: {
+                            slug: true
+                        }
+                    },
                     views: true,
                     slug: true,
                     hashtags: true,
@@ -169,7 +190,8 @@ export class PostRepository {
                     _count: {
                         select: {
                             comments: true,
-                            reactions: true
+                            reactions: true,
+                            children: true
                         }
                     }
                 },
@@ -202,7 +224,10 @@ export class PostRepository {
                 post.hashtags.split(','),
                 post._count.comments,
                 calculateReadingTime(post.content as string),
-                post._count.reactions))
+                post._count.reactions,
+                post.canRepost,
+                post._count.children,
+                post.parent?.slug,))
 
             return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
@@ -222,7 +247,8 @@ export class PostRepository {
                     _count: {
                         select: {
                             comments: true,
-                            reactions: true
+                            reactions: true,
+                            children: true
                         }
                     },
                     category: {
@@ -233,6 +259,11 @@ export class PostRepository {
                     author: {
                         select: {
                             nickname: true
+                        }
+                    },
+                    parent: {
+                        select: {
+                            slug: true
                         }
                     },
                     comments: {
@@ -275,6 +306,9 @@ export class PostRepository {
                     post._count.comments,
                     calculateReadingTime(post.content as string),
                     post._count.reactions,
+                    post.canRepost,
+                    post._count.children,
+                    post.parent?.slug,
                     comments)
                 : null
         } catch (error) {
@@ -469,6 +503,7 @@ export class PostRepository {
                     views: true,
                     slug: true,
                     hashtags: true,
+                    canRepost: true,
                     category: {
                         select: {
                             name: true
@@ -479,10 +514,16 @@ export class PostRepository {
                             nickname: true
                         }
                     },
+                    parent: {
+                        select: {
+                            slug: true
+                        }
+                    },
                     _count: {
                         select: {
                             comments: true,
-                            reactions: true
+                            reactions: true,
+                            children: true
                         }
                     }
                 },
@@ -515,7 +556,10 @@ export class PostRepository {
                 post.hashtags.split(','),
                 post._count.comments,
                 calculateReadingTime(post.content as string),
-                post._count.reactions))
+                post._count.reactions,
+                post.canRepost,
+                post._count.children,
+                post.parent?.slug,))
 
             return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
@@ -541,11 +585,18 @@ export class PostRepository {
                     views: true,
                     slug: true,
                     hashtags: true,
+                    canRepost: true,
                     category: {
                         select: {
                             name: true
                         }
-                    }, author: {
+                    }, 
+                    parent: {
+                        select: {
+                            slug: true
+                        }
+                    },
+                    author: {
                         select: {
                             nickname: true
                         }
@@ -553,7 +604,8 @@ export class PostRepository {
                     _count: {
                         select: {
                             comments: true,
-                            reactions: true
+                            reactions: true,
+                            children: true
                         }
                     }
                 },
@@ -570,6 +622,11 @@ export class PostRepository {
                     },
                     {
                         views: "desc"
+                    },
+                    {
+                        children: {
+                            _count: "desc"
+                        }
                     }
                 ],
                 take: limit,
@@ -598,7 +655,10 @@ export class PostRepository {
                 post.hashtags.split(','),
                 post._count.comments,
                 calculateReadingTime(post.content as string),
-                post._count.reactions))
+                post._count.reactions,
+                post.canRepost,
+                post._count.children,
+                post.parent?.slug))
 
             return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
@@ -634,6 +694,7 @@ export class PostRepository {
                     views: true,
                     slug: true,
                     hashtags: true,
+                    canRepost: true,
                     category: {
                         select: {
                             name: true
@@ -644,10 +705,16 @@ export class PostRepository {
                             nickname: true
                         }
                     },
+                    parent: {
+                        select: {
+                            slug: true
+                        }
+                    },
                     _count: {
                         select: {
                             comments: true,
-                            reactions: true
+                            reactions: true,
+                            children: true
                         }
                     }
                 },
@@ -689,7 +756,10 @@ export class PostRepository {
                 post.hashtags.split(','),
                 post._count.comments,
                 calculateReadingTime(post.content as string),
-                post._count.reactions))
+                post._count.reactions,
+                post.canRepost,
+                post._count.children,
+                post.parent?.slug,))
 
             return new PagedPosts(pagedPosts, pagination)
         } catch (error) {
@@ -762,6 +832,58 @@ export class PostRepository {
         } catch (error) {
             console.error(error)
             return Result.setError('Error publishing thought')
+        }
+    }
+
+    async repost(postId: string, userId: string): Promise<Result> {
+        try {
+            const post = await prismaClient.post.findFirst({
+                where: {
+                    id: postId,
+                    published: true,
+                },
+                select: {
+                    title: true,
+                    content: true,
+                    hashtags: true,
+                    canRepost: true,
+                    parent: {
+                        select: {
+                            id: true
+                        }
+                    },
+                    category: {
+                        select: {
+                            id: true
+                        }
+                    }
+                }
+            })
+            
+            if (!post) {
+                return Result.setError('Thought not found')
+            }
+
+            const originalPostId = post.parent?.id || postId
+
+            const friendlyUrl = createFriendlyUrl(`${post.title} rethought`)
+            await prismaClient.post.create({
+                data: {
+                    title: post.title,
+                    content: post.content,
+                    authorId: userId,
+                    published: true,
+                    slug: friendlyUrl,
+                    categoryId: post.category.id,
+                    hashtags: post.hashtags,
+                    parentId: originalPostId,
+                    canRepost: post.canRepost
+                }
+            })
+            return Result.setSuccess('Rethought successfully')
+        } catch (error) {
+            console.error(error)
+            return Result.setError('Error rethoughting')
         }
     }
 }

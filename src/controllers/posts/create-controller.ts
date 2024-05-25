@@ -13,9 +13,9 @@ export const createPost = async (req: Request<{}, {}, CreatePost>, res: Response
     let result
 
     if (model.id) {
-        result = await postRepository.update(model.id, model.title, model.content, model.published, id, model.category, model.tags)
+        result = await postRepository.update(model.id, model.title, model.content, model.published, id, model.category, model.tags, model.canRepost)
     }else {
-        result = await postRepository.create(model.title, model.content, model.published, id, model.category, model.tags)
+        result = await postRepository.create(model.title, model.content, model.published, id, model.category, model.tags, model.canRepost)
     }
     
     if (result.type !== MessageType.Success) {
@@ -39,4 +39,17 @@ export const deletePost = async (req: Request, res: Response) => {
 
     req.flash(MessageType.Success, result.message)
     res.redirect('/mind')
+}
+
+export const repost = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { id: userId } = req.user as SavedUser
+    const result = await postRepository.repost(id, userId)
+
+    if (result.type !== MessageType.Success) {
+        res.json({ success: false, message: result.message })
+        return
+    }
+
+    res.json({ success: true, message: result.message })
 }

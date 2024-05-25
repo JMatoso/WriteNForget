@@ -129,15 +129,22 @@ export class UserRepository {
                             views: true,
                             slug: true,
                             hashtags: true,
+                            canRepost: true,
                             category: {
                                 select: {
                                     name: true
                                 }
                             },
+                            parent: {
+                                select: {
+                                    slug: true
+                                }
+                            },
                             _count: {
                                 select: {
                                     comments: true,
-                                    reactions: true
+                                    reactions: true,
+                                    children: true
                                 }
                             }
                         },
@@ -168,7 +175,10 @@ export class UserRepository {
 
             const pagination = new Pagination(page, totalUserPosts, limit)
             const posts = user.posts.map(post =>
-                new Post(post.id, post.title, post.content as string, post.published, user.nickname, user.id, post.createdAt, post.views, post.category.name, post.slug, post.hashtags.split(','), post._count.comments, calculateReadingTime(post.content as string), post._count.reactions))
+                new Post(post.id, post.title, post.content as string, post.published, user.nickname, 
+                        user.id, post.createdAt, post.views, post.category.name, post.slug, post.hashtags.split(','), 
+                        post._count.comments, calculateReadingTime(post.content as string), 
+                        post._count.reactions, post.canRepost, post._count.children, post.parent?.slug,))
             const pagedUser = new UserWithPosts(new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string), posts)
             return new PagedUsersWithPosts(pagedUser, pagination)
         } catch (error) {

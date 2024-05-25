@@ -209,3 +209,30 @@ async function reactComment(element, commentId) {
     }
     catch (error) { setError(error) }
 }
+
+async function rethought(element, postId) {
+    try {
+        element.disabled = true
+        const csrfToken = document.getElementById('csrfToken').value
+        const rethoughtCounter = document.getElementById(`rethought-counter-${postId}`)
+
+        const response = await fetch(`/repost/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'CSRF-Token': csrfToken
+            }
+        })
+
+        const data = JSON.parse(await response.text())
+        if (data.success === false) { 
+            element.disabled = false 
+            element.classList.add('border-0')
+            const count = parseInt(rethoughtCounter.textContent)
+            rethoughtCounter.textContent = count - 1
+        }
+
+        toast(data.message, '#FFFFFF')
+    } 
+    catch (error) { setError(error) }
+}

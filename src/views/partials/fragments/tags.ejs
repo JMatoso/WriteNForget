@@ -1,5 +1,5 @@
 <div class="row mt-2">
-    <div class="col-sm-6 mt-1 mb-2 fs-x-small">
+    <div class="col-lg-6 mt-1 mb-2 fs-x-small">
         <a href="/thoughts?search=<%= post.categoryName %>" class="px-3 fs-small badge py-2 me-1 mb-1 fw-x-normal rounded-pill bg-light-2">
             <%= post.categoryName %>
         </a>
@@ -8,7 +8,7 @@
             <%= post.readingTime %> min read
         </span>
     </div>
-    <div class="col-sm-6 text-end post-reactions-align">
+    <div class="col-lg-6 text-end post-reactions-align">
         <%- include('../fragments/reactions.ejs', { post: post })  %>
     </div>
 </div>

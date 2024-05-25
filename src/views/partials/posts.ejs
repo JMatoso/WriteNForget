@@ -18,6 +18,12 @@
                     <span class="text-muted">
                         <%= formatDistanceToNow(post.createdAt, { addSuffix: true }) %>
                     </span>
+                    <% if(post.repostSlug) { %>
+                        <small class="px-1">&#xb7;</small>
+                        <a class="text-muted" href="/read/<%= post.repostSlug %>">
+                            Rethought
+                        </a>
+                    <% } %>
                 </div>
                 <div>
                     <div class="dropdown">
@@ -31,7 +37,6 @@
                                 <% if (!post.published) { %>
                                     <li><button class="dropdown-item" onclick="publish(this, '<%= post.id %>')">Publish</button></li>
                                 <% } %>
-                                <input type="hidden" name="_csrf" id="csrfToken" value="<%= csrfToken %>">
                             <% } %>
                             <li><a class="dropdown-item pointer" onclick="copyLinkToClipBoard('/read/<%= post.slug %>')">Copy Link</a></li>
                         </ul>
@@ -56,4 +61,6 @@
     <% }) %>
 </div>
 
-<% if (data.posts) { include ('../partials/fragments/pagination.ejs', { pagination: data.pagination }) } %>
+<% if (data.posts && data.posts.length > 0) { %>
+    <%- include ('../partials/fragments/pagination.ejs', { pagination: data.pagination })  %>
+<% } %>

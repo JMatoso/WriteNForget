@@ -13,13 +13,24 @@
         </small>
     </button>
 
+    <% if (post.canRepost) { %>
+        <button type="button" class="btn" <% if(locals.user && post.canRepost) { %> onclick="rethought(this, '<%= post.id %>')" <% } %>>
+            <i class="fa-solid fa-repeat"></i>
+            <% if (!post.repostSlug) { %>
+                <small class="fw-x-normal fs-small" id="rethought-counter-<%= post.id %>">
+                    <%= numeral(post.repostCount).format('0a') %>
+                </small>
+            <% } %>
+        </button>
+    <% } %>
+
     <% if(locals.user && locals.user.id === post.authorId) { %>
         <% if (post.published) { %>
             <button type="button" class="btn border-0 no-pointer" 
                     data-bs-toggle="tooltip" 
                     data-bs-placement="top"
                     data-bs-custom-class="custom-tooltip"
-                    data-bs-title="Number of Views in This Post">
+                    data-bs-title="Views">
                 <i class="fa-regular fa-eye"></i>
                 <small class="fw-x-normal fs-small">
                     <%= numeral(post.views).format('0a') %>
@@ -30,7 +41,7 @@
                     data-bs-toggle="tooltip" 
                     data-bs-placement="top"
                     data-bs-custom-class="custom-tooltip"
-                    data-bs-title="This Post is Private">
+                    data-bs-title="This is a private thought">
                 <i class="fa-regular fa-eye-slash"></i>
             </button>
         <% } %>

@@ -29,7 +29,7 @@ export const write = async (req: Request, res: Response) => {
     const { nickname } = req.user as SavedUser
     const postId = req.params.id
 
-    const emptyPost = new UpdatePost('', '', '', '', '', false)
+    const emptyPost = new UpdatePost('', '', '', '', '', false, false)
 
     if (!postId) {
         res.render('posts/write', { metaTags: defineMetaTags(req, 'Write Thought', nickname), post: emptyPost })

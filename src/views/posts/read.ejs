@@ -16,6 +16,12 @@
                     <span>
                         <%= post.readingTime %> min read
                     </span>
+                    <% if(post.repostSlug) { %>
+                        <small class="px-1">&#xb7;</small>
+                        <a class="text-muted" href="/read/<%= post.repostSlug %>">
+                            Rethought
+                        </a>
+                    <% } %>
                 </div>   
             </div>
 
@@ -97,7 +103,14 @@
                     <div class="border-bottom pt-3 pb-1" id="<%= comment.id %>">
                         <div class="d-flex justify-content-between">
                             <div class="fs-x-small pointer" onclick="location .href='/author/<%= comment.authorId %>'">
-                                <span class="fw-bold d-block"><%= comment.authorNickname %></span>
+                                <span class="fw-bold d-block">
+                                    <%= comment.authorNickname %>
+                                    <% if (comment.authorId === post.authorId) { %>
+                                        <small class="text-warning mx-1">
+                                            <i class="fa-solid fa-shield"></i>
+                                        </small>
+                                    <% } %>
+                                </span>
                                 <span class="bg-text-muted d-block"><%= formatDistanceToNow(comment.createdAt, { addSuffix: true }) %></span>
                             </div>
                             <div>

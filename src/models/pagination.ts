@@ -18,7 +18,7 @@ export class Pagination {
     }
 
     get canPaginate(): boolean {
-        return this.totalPages > 1 && this.total > this.limit && this.hasNext
+        return (this.totalPages > 1 && this.total > this.limit && this.hasNext) || this.hasPrev
     }
 
     get nextPage(): number {

@@ -16,6 +16,9 @@ export class Post {
     numberOfComments: number
     readingTime: number
     numberOfReactions: number
+    canRepost: boolean
+    repostCount: number
+    repostSlug?: string
     comments?: Comment[]
     constructor(id: string, 
                 title: string, 
@@ -31,6 +34,9 @@ export class Post {
                 numberOfComments: number, 
                 readingTime: number, 
                 numberOfReactions: number,
+                canRepost: boolean,
+                repostCount: number,
+                repostSlug?: string,
                 comments?: Comment[]) {
         this.id = id
         this.title = title
@@ -46,6 +52,9 @@ export class Post {
         this.numberOfComments = numberOfComments
         this.readingTime = readingTime
         this.numberOfReactions = numberOfReactions
+        this.canRepost = canRepost
+        this.repostCount = repostCount
+        this.repostSlug = repostSlug
         this.comments = comments
     }
 }
@@ -56,7 +65,8 @@ export interface CreatePost {
     content: string
     category: string
     tags: string
-    published: boolean
+    published: boolean,
+    canRepost: boolean
 }
 
 export class PagedPosts {
@@ -86,12 +96,14 @@ export class UpdatePost {
     category: string
     hashtags: string
     published: boolean
-    constructor(id: string, title: string, content: string, category: string, hashtags: string, published: boolean) {
+    isRepost: boolean
+    constructor(id: string, title: string, content: string, category: string, hashtags: string, published: boolean, isRepost: boolean) {
         this.id = id
         this.title = title
         this.content = content
         this.category = category
         this.hashtags = hashtags
         this.published = published
+        this.isRepost = isRepost
     }
 }

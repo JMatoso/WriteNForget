@@ -5,22 +5,29 @@
     <%- include ('../partials/fragments/headerWithSubmit.ejs', { title: metaTags.title, description: 'Let\'s Forget About It' }) %>
     <%- include ('../partials/alerts.ejs') %>
 
+    <% if (post.isRepost) { %> 
+        <div class="alert alert-info my-2" role="alert">
+            This is a rethought. You can't edit it.
+        </div>    
+    <% } %>
+
     <div class="form-group mt-3">
-        <input type="text" value="<%= post.title %>" class="form-control form-control-lg border-0 fs-1" id="title" placeholder="Title" name="title" required>
+        <input type="text" <% if (post.isRepost) { %> readonly disabled <% } %> value="<%= post.title %>" class="form-control form-control-lg border-0 fs-1 <% if (post.isRepost) { %> disabled <% } %>" id="title" placeholder="Title" name="title" required>
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="form-group mb-3">
-                <input type="text" value="<%= post.hashtags %>" class="form-control py-2" placeholder="Hashtags: life, hack, school" id="tags" name="tags" required>
+                <input type="text" value="<%= post.hashtags %>" <% if (post.isRepost) { %> readonly disabled <% } %> class="form-control py-2 <% if (post.isRepost) { %> disabled <% } %>" placeholder="Hashtags: life, hack, school" id="tags" name="tags" required>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="form-group mb-3">
                 <input id="autoComplete" 
                     type="search" 
                     dir="ltr" 
-                    class="border w-100 form-control"
+                    <% if (post.isRepost) { %> readonly disabled <% } %>
+                    class="border w-100 form-control <% if (post.isRepost) { %> disabled <% } %>"
                     value="<%= post.category %>"
                     placeholder="What's your thought related to?" 
                     id="category" name="category" required 
@@ -30,7 +37,15 @@
         </div>
         <div class="col-md-2">
             <div class="form-group mb-3">
-                <select class="form-control py-2" aria-label="Published Thought" id="published" name="published" required>
+                <select class="form-control <% if (post.isRepost) { %> disabled <% } %> py-2" <% if (post.isRepost) { %> readonly disabled <% } %> aria-label="Can Repost" id="canRepost" name="canRepost" required>
+                    <option value="true" <% if (post && post.canRepost) { %> selected <% } %>>Rethought</option>
+                    <option value="false" <% if (!post || (post && !post.canRepost)) { %> selected <% } %>>No Rethought</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group mb-3">
+                <select class="form-control <% if (post.isRepost) { %> disabled <% } %> py-2" <% if (post.isRepost) { %> readonly disabled <% } %> aria-label="Published Thought" id="published" name="published" required>
                     <option value="true" <% if (post && post.published) { %> selected <% } %>>Public</option>
                     <option value="false" <% if (!post || (post && !post.published)) { %> selected <% } %>>Private</option>
                 </select>
@@ -38,9 +53,13 @@
         </div>
     </div>
     <div class="form-group">
-        <textarea name="content" id="editor" placeholder="Write your thoughts here">
-            <%= post.content %>
-        </textarea>
+        <% if (post.isRepost) { %> 
+            <%- post.content %>
+        <% } else { %>
+            <textarea name="content" id="editor" placeholder="Write your thoughts here">
+                <%= post.content %>
+            </textarea>
+        <% } %>
     </div>
 
     <input type="hidden" name="id" value="<%= post.id %>">

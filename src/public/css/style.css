@@ -272,6 +272,27 @@ a.badge:hover {
   min-height: 100%;
 }
 
+.active>.page-link, .page-link.active {
+  color: #fff;
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.page-link {
+  color: #ffc107;
+  border-color: #ffc10725;
+}
+
+.page-link:hover {
+  color: #cecece;
+  background-color: rgba(255, 193, 7, 0.1);
+  border-color: #ffc10789;
+}
+
+.page-link:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
 .footer-bottom {
   margin: 0;
   padding: 1rem 0;
@@ -555,13 +576,9 @@ a.badge:hover {
   }
 }
 
-@media only screen and (min-width: 992px) {
-  .centered {
-    width: 55% !important;
-  }
-
-  .app-container {
-    width: 100% !important;
+@media only screen and (max-width: 992px) {
+  .col-lg-6.post-reactions-align {
+    text-align: left !important;
   }
 }
 

@@ -23,6 +23,10 @@ model Post {
   author     User       @relation(fields: [authorId], references: [id])
   category   Category   @relation(fields: [categoryId], references: [id])
   reactions  Reaction[]
+  canRepost  Boolean    @default(false)
+  parentId   String?
+  parent     Post?      @relation("Reposts", fields: [parentId], references: [id])
+  children   Post[]     @relation("Reposts")
 
   @@map("posts")
 }

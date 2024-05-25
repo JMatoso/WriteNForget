@@ -14,7 +14,7 @@ export function tagtize(tags: string): string {
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z\s]/gi, ' ')
+        .replace(/[^a-z0-9\s]/gi, ' ')
         .split(/\s+/)
         .filter(Boolean)
 
