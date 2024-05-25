@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install && tsc --build && copyfiles -u 1 src/**/* dist && copyfiles -u 1 src/public/**/* dist",
+    "build": "npm install && tsc --build && copyfiles -u 1 src/views/**/* dist && copyfiles -u 1 src/public/**/* dist",
     "start": "node ./dist/index.js",
     "dev": "nodemon ./src/index.ts"
   },
