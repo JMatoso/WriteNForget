@@ -574,6 +574,10 @@ a.badge:hover {
   .app-container {
     width: 100% !important;
   }
+
+  .fixed-column {
+    height: auto;
+  }
 }
 
 @media only screen and (max-width: 992px) {
