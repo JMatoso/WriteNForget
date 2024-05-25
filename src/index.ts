@@ -31,7 +31,10 @@ app.use(session({
     secret: SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: {
+        secure: false,
+        maxAge: 1000 * 60 * 60 * 24 * 30
+    }
 }))
 
 app.use(flash())
@@ -44,7 +47,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.error = req.flash(MessageType.Error)
     res.locals.warning = req.flash(MessageType.Warning)
     res.locals.success = req.flash(MessageType.Success)
-    
+
     res.locals.user = req.user || null
     res.locals.path = getFirstPath(req)
     res.locals.year = new Date().getFullYear()
@@ -52,7 +55,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.moment = moment
     res.locals.numeral = numeral
     res.locals.formatDistanceToNow = formatDistanceToNow
-    
+
     next()
 })
 

@@ -1,7 +1,7 @@
 import { PagedPosts, Post, UpdatePost } from '../models/post'
 import { Result } from '../models/result'
 import { Comment, PagedComments } from "../models/comment"
-import prismaClient from '../data/prismaClient'
+import prismaClient from  '../data/prisma-client'
 import { ReactionType } from '../types/reaction-types'
 import { CategoryRepository } from './category-repository'
 import { createFriendlyUrl, tagtize, calculateReadingTime, capitalizeFirstLetters } from '../helpers/string-helper'

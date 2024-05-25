@@ -1,4 +1,4 @@
-import prismaClient from '../data/prismaClient'
+import prismaClient from '../data/prisma-client'
 import { capitalizeFirstLetters } from '../helpers/string-helper'
 import { Result } from '../models/result'
 

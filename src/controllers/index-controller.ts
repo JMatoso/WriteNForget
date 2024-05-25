@@ -29,7 +29,7 @@ export const notFound = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const error = (req: Request, res: Response, next: NextFunction) => {
-    if (process.env.SECRET !== 'development') {
+    if (process.env.NODE_ENV !== 'development') {
         res.status(500).render('error', { metaTags: defineMetaTags(req, 'Error') })
     } 
 }

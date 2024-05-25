@@ -1,11 +1,10 @@
 import { calculateReadingTime, capitalizeFirstLetters } from '../helpers/string-helper'
 import { TinyUser, SavedUser, UserWithPosts, PagedTinyUsers, PagedUsersWithPosts } from '../models/user'
-import prismaClient from '../data/prismaClient'
+import prismaClient from  '../data/prisma-client'
 import { Result } from '../models/result'
 import { Post, TinyPost } from '../models/post'
 import bcrypt from 'bcryptjs'
 import { Pagination } from '../models/pagination'
-import { comment } from '../controllers/posts/reaction-controller'
 
 export class UserRepository {
     async create(nickname: string, email: string, password: string): Promise<Result> {
