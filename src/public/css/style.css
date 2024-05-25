@@ -329,7 +329,6 @@ a.badge:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #ffffff;
   z-index: 500;
   height: 100vh;
   width: 100%;
@@ -355,7 +354,7 @@ a.badge:hover {
 
 #loader>div {
   content: "";
-  background: #000000;
+  background: #ffc107;
   width: 6px;
   height: 6px;
   position: absolute;
@@ -371,6 +370,15 @@ a.badge:hover {
 #loader>div:nth-of-type(3) {
   left: -15px;
 }
+
+[data-bs-theme=light] #preloader {
+  background: #ffffff;
+}
+
+[data-bs-theme=dark] #preloader {
+  background: #212529;
+}
+
 
 .dots-jump>div {
   -webkit-animation: dots-jump 1.2s infinite ease;
