@@ -3,6 +3,23 @@ import { capitalizeFirstLetters } from '../helpers/string-helper'
 import { Result } from '../models/result'
 
 export class CategoryRepository {
+    async findAll(limit: number = 15): Promise<string[]> {
+        const categories = await prismaClient.category.findMany({
+            orderBy: [
+                { name: 'asc' }
+            ],
+            where: {
+                isDeleted: false,
+            },
+            select: {
+                name: true
+            },
+            take: limit
+        })
+
+        return categories.map(category => category.name)
+    }
+    
     async findMany(limit: number = 15): Promise<string[]> {
         const categories = await prismaClient.category.findMany({
             orderBy: [

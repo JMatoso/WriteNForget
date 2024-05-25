@@ -35,13 +35,13 @@ export const error = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const contact = (req: Request, res: Response) => {
-    res.render('contact', { metaTags: defineMetaTags(req, 'Get in Touch') })
+    res.render('contact', { metaTags: defineMetaTags(req, 'Get in Touch', '', 'Get in touch with us for any inquiries, feedback, or support.') })
 }
 
 export const about = (req: Request, res: Response) => {
-    res.render('about', { metaTags: defineMetaTags(req, 'About') })
+    res.render('about', { metaTags: defineMetaTags(req, 'About', '', 'Learn more about the story behind us.') })
 }
 
 export const terms = (req: Request, res: Response) => {
-    res.render('terms', { metaTags: defineMetaTags(req, 'Terms & Policy') })
+    res.render('terms', { metaTags: defineMetaTags(req, 'Terms & Policy', '', 'Stay informed about our privacy practices.') })
 }

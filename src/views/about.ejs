@@ -1,8 +1,57 @@
 <%- include ('partials/header.ejs') %>
+    <div class="app-container">
+        <%- include ('partials/fragments/header.ejs', { title: 'About Us' , cite: 'Let go your thoughts.' }) %>
+        <%- include ('partials/alerts.ejs') %>
+        <section>
+            <p>Welcome to <strong>WriteNForget</strong>, the ultimate space to pen down your thoughts and let
+                go. Our platform is designed for those who want to express themselves freely without the
+                pressure of permanence. Here, you can write your thoughts and forget them, creating a digital
+                journal, diary, blog, or note collection that is both private and liberating.</p>
+            <p>At <strong>WriteNForget</strong>, we believe in the power of expression and the freedom that
+                comes with it. Whether you are jotting down memories, drafting posts, or simply organizing your
+                ideas, our site offers a seamless and secure environment to do so. Our mission is to provide you
+                with a tool that helps you capture your thoughts effortlessly and move forward without the need
+                to hold on to them.</p>
+            <p>Join our community of writers, thinkers, and dreamers. Share your thoughts, let them flow, and
+                embrace the peace of mind that comes with writing and forgetting.</p>
+        </section>
+        <section>
+            <h4 class="my-2">Tags</h4>
+            <ul>
+                <li>Write</li>
+                <li>Forget</li>
+                <li>Thoughts</li>
+                <li>Posts</li>
+                <li>Memories</li>
+                <li>Journal</li>
+                <li>Diary</li>  
+                <li>Blog</li>
+                <li>Notes</li>
+                <li>WriteNForget</li>
+            </ul>
+        </section>
+        <section>
+            <h4 class="my-2">Our Mission</h4>
+            <p>To provide a free, secure, and user-friendly platform where anyone can express their thoughts and
+                let go of them, fostering a community of openness and creativity.</p>
+        </section>
+        <section>
+            <h4 class="my-2">Our Vision</h4>
+            <p>To become the leading platform for personal expression, where individuals feel empowered to write
+                freely and live fully, unburdened by their thoughts.</p>
+        </section>
+        <section>
+            <h4 class="my-2">Our Values</h4>
+            <ul>
+                <li><strong>Freedom:</strong> Encouraging free expression without the pressure of permanence.
+                </li>
+                <li><strong>Privacy:</strong> Ensuring your thoughts remain yours with robust security and
+                    privacy measures.</li>
+                <li><strong>Community:</strong> Building a supportive and inspiring network of writers and
+                    thinkers.</li>
+            </ul>
+        </section>
 
-<div class="app-container">
-    <%- include ('partials/fragments/header.ejs', { title: 'About', cite: 'So, you wanna know more...' }) %>
-    <%- include ('partials/alerts.ejs') %>
-</div>
-    
+        <%- include ('partials/fragments/footer.ejs') %>
+    </div>
 <%- include ('partials/footer.ejs') %>

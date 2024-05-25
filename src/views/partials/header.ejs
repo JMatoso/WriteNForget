@@ -40,7 +40,7 @@
             </button>
 
             <form class="d-flex" role="search" method="get" action="/thoughts">
-                <input autocomplete="on" class="low-form-control me-2" name="search" type="search" placeholder="Search"
+                <input autocomplete="on" class="form-control me-2" name="search" type="search" placeholder="Search"
                     aria-label="Search">
             </form>
 
@@ -51,22 +51,36 @@
                         <i class="fa-solid fa-pen-to-square"></i>
                         Write
                     </a>
+                <% } %>
 
-
-                    <div class="btn-group">
-                        <button type="button" title="User Dropdown" class="btn btn-warning dropdown-toggle" data-bs-auto-close="outside"
-                            data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                <div class="btn-group">
+                    <button type="button" title="User Dropdown" class="btn btn-warning dropdown-toggle" data-bs-auto-close="outside"
+                        data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                        <% if (locals.user) { %>
                             <%= locals.user.nickname %>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-lg-end">
+                        <% } else { %>
+                            Get Started
+                        <% } %>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-lg-end">
+                        <% if (locals.user) { %>
                             <li><a class="dropdown-item" href="/mind">My Mind</a></li>
+                        <% } else { %>
+                            <li><a class="dropdown-item" href="/login">Login</a></li>
+                            <li><a class="dropdown-item" href="/register">Register</a></li>
+                        <% } %>
+
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/about">About</a></li>
+                        <li><a class="dropdown-item" href="/terms">Terms</a></li>
+                        <li><a class="dropdown-item" href="/contact">Contact</a></li>
+                        
+                        <% if (locals.user) { %>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
-                        </ul>
-                    </div>
-                    <% } else { %>
-                        <a class="btn btn-warning" href="/login">Login</a>
-                    <% } %>
+                        <% } %>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>

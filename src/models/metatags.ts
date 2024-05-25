@@ -1,7 +1,7 @@
 import { htmlToText } from 'html-to-text'
 import { capitalizeFirstLetters } from '../helpers/string-helper'
 
-const defaultDescription = 'Write your thoughts and forget them.'
+const defaultDescription = 'Let go your thoughts.'
 
 export class MetaTags {
     title: string;
@@ -54,10 +54,12 @@ export class MetaTags {
             return
         }
 
-        const plainText = htmlToText(description.substring(0, 160) + '...', {
+        const normalizedDescription = description.length > 160 ? `${description.substring(0, 160)}...` : description 
+        const plainText = htmlToText(normalizedDescription, {
             wordwrap: false, 
             preserveNewlines: false 
         })
+
         this.description = plainText || defaultDescription
     }
 

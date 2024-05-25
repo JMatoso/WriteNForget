@@ -71,37 +71,9 @@ app.use(postRouter)
 app.use(notFound)
 app.use(error)
 
-import fs from 'fs'
-
 app.listen({
     host: '0.0.0.0',
     port: PORT,
 }, () => {
     console.log(`\nServer is running on port ${PORT}\n`)
-    recursiveFolderListing(__dirname)
 })
-
-function recursiveFolderListing(caminho: string) {
-    fs.readdir(caminho, (err, files) => {
-        if (err) {
-            console.error(`Erro ao ler '${caminho}'`, err);
-            return;
-        }
-
-        files.forEach((file) => {
-            const caminhoCompleto = path.join(caminho, file);
-            fs.stat(caminhoCompleto, (err, stat) => {
-                if (err) {
-                    console.error(`Erro ao obter informações sobre '${caminhoCompleto}'`, err);
-                    return;
-                }
-
-                if (stat.isDirectory()) {
-                    recursiveFolderListing(caminhoCompleto);
-                } else {
-                    console.log(caminhoCompleto);
-                }
-            });
-        });
-    });
-}

@@ -22,5 +22,5 @@ export const search = async (req: Request, res: Response) => {
 }
 
 export const categories = async (req: Request, res: Response) => {
-    res.json(await categoryRepository.findMany(100))
+    res.json(await categoryRepository.findAll(150))
 }
