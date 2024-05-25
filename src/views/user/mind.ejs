@@ -11,6 +11,13 @@
         <%- include ('../partials/posts.ejs', { data: data.posts }) %>
     </div>
     <div class="col-md-4 position-relative">
+        <div class="small-divider pb-5">
+            <h3 class="text-center bg-text-black-50 fw-light">
+                <span class="px-2">&#xb7;</span>
+                <span class="px-2">&#xb7;</span>
+                <span class="px-2">&#xb7;</span>
+            </h3>
+        </div>
         <div class="fixed-column bg-text-white p-4">
             <%- include ('../partials/fragments/counters.ejs', { followers: 0, postsCount: data.postsCount }) %>
 
@@ -20,6 +27,7 @@
 
             <%- include ('../partials/fragments/posts.ejs', { posts: data.latestReactions, title: 'Latest reactions' }) %>
             <%- include ('../partials/fragments/topics.ejs', { categories: data.categories, title: 'Recommended topics' }) %>
+            <div class="pb-5">&nbsp;</div>
         </div>
     </div>
 </div>

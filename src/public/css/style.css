@@ -282,6 +282,10 @@ a.badge:hover {
   display: none;
 }
 
+.small-divider {
+  display: none;
+}
+
 .low-form-control {
   background-color: #f2f0f0;
   border: 2px solid #f2f0f0;
@@ -494,5 +498,59 @@ a.badge:hover {
   80% {
     -webkit-transform: scale(1);
     transform: scale(1);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .col-md-8 {
+    border-right: none !important;
+  }
+
+  .fixed-column {
+    position: relative;
+    width: 100%;
+    padding: 0 !important;
+  }
+
+  .small-divider {
+    display: block;
+  }
+
+  .centered {
+    width: 50% !important;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .centered {
+    width: 100% !important;
+  }
+
+  .post-reactions-align {
+    text-align: left !important;
+  }
+
+  .app-container {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .centered {
+    width: 55% !important;
+  }
+
+  .app-container {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .centered {
+    width: 25% !important;
+  }
+
+  .app-container {
+    width: 75% !important;
   }
 }

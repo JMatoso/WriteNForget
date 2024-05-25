@@ -19,16 +19,8 @@
             </div>
         <% } %>
     </div>
-    <div class="col-md-4 position-relative">
-        <div class="p-4">
-            <% if (locals.user) { %>
-                <a href="/mind" class="btn btn-light d-block w-100 mb-4">
-                    My Mind
-                </a>
-            <% } %>
-            
-            <%- include ('../partials/fragments/users.ejs', { users: data.users.users, title: `Thinkers Found (${data.users.users.length})` }) %>
-        </div>
+    <div class="col-md-4 position-relative p-4">        
+        <%- include ('../partials/fragments/users.ejs', { users: data.users.users, title: `Thinkers Found (${data.users.users.length})` }) %>
     </div>
 </div>
     
