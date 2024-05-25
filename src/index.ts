@@ -78,26 +78,15 @@ app.listen({
     port: PORT,
 }, () => {
     console.log(`\nServer is running on port ${PORT}\n`)
-    console.log(`> ${__dirname}`)
-    console.log(`> ${path.join(__dirname, 'views')}`)
-    console.log(`> ${path.join(__dirname, 'public')}`)
-    console.log(`> ${path.join(__dirname, 'views', 'index.ejs')}`)
-    
-    fs.access(path.join(__dirname, 'views', 'index.ejs'), fs.constants.F_OK, (err) => {
+
+    fs.readdir(path.join(__dirname, 'views'), (err, files) => {
         if (err) {
-            console.error('Index not found');
+            console.error(`Error reading '${path.join(__dirname, 'views')}'`, err)
             return;
         }
     
-        console.log('Index found');
-    });
-    
-    fs.access(path.join(__dirname, 'views'), fs.constants.F_OK, (err) => {
-        if (err) {
-            console.error('Views not found');
-            return;
-        }
-    
-        console.log('Views found');
-    });
+        files.forEach((file) => {
+            console.log(file)
+        })
+    })
 })
