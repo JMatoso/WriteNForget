@@ -3,11 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "description": "Write something to others and forget about it.",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install && tsc --build && copyfiles -u 1 src/views/**/* dist && copyfiles -u 1 src/public/**/* dist",
-    "start": "node dist/index.js",
+    "start": "node ./dist/index.js",
     "dev": "nodemon src/index.ts"
   },
   "repository": {

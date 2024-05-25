@@ -101,7 +101,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/views/**/*.ejs",
+    "src/views/**/*",
     "src/public/**/*"
   ],
   "exclude": [
