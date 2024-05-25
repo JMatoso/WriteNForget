@@ -17,7 +17,7 @@ export const index = async (req: Request, res: Response) => {
     let userId = req.isAuthenticated() ? (req.user as any).id : ''
     const users = await userRepository.findPopularUsers(userId)
     const categories = await categoryRepository.findMany()
-    res.render(path.join(__dirname, '../views/index.ejs'), { 
+    res.render(path.join(__dirname, '../views/index'), { 
         data: { posts, users, categories },
         metaTags: defineMetaTags(req, 'Thoughts') 
     })
