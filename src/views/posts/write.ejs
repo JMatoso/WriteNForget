@@ -89,9 +89,7 @@
                     src: async (query) => {
                         try {
                             const source = await fetch(`/fetch-categories`)
-                            const data = await source.json()
-                            console.log(data)
-                            return data;
+                            return await source.json()
                         } catch (error) { return error }
                     }, 
                     cache: true,

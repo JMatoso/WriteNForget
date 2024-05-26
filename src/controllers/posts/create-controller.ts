@@ -45,11 +45,5 @@ export const repost = async (req: Request, res: Response) => {
     const { id } = req.params
     const { id: userId } = req.user as SavedUser
     const result = await postRepository.repost(id, userId)
-
-    if (result.type !== MessageType.Success) {
-        res.json({ success: false, message: result.message })
-        return
-    }
-
-    res.json({ success: true, message: result.message })
+    res.json({ success: result.success, message: result.message })
 }

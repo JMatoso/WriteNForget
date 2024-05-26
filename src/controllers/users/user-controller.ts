@@ -51,19 +51,7 @@ export const author = async (req: Request, res: Response) => {
         return
     }
 
-    if (req.isAuthenticated()) {
-        const { id } = req.user as SavedUser
-
-        if (id === req.params.id) {
-            res.redirect('/mind')
-            return
-        }
-    }
-
     const page = parseInt(req.query.page as string) || 1
-    const postsCount = await postRepository.countUserPosts(id)
-    const categories = await categoryRepository.findInterests(id)
-    const latestReactions = await userRepository.findLatestReactions(id)
     const userWithPosts = await userRepository.findByIdWithPosts(id, page)
 
     if (!userWithPosts) {
@@ -71,11 +59,36 @@ export const author = async (req: Request, res: Response) => {
         return
     }
 
+    let isFollowing = false
+
+    if (req.isAuthenticated()) {
+        const { id } = req.user as SavedUser
+
+        if (id === req.params.id) {
+            res.redirect('/mind')
+            return
+        }
+
+        isFollowing = await userRepository.isFollowing(id, req.params.id)
+    }
+
+    const postsCount = userWithPosts.pagination.total
+    const categories = await categoryRepository.findInterests(id)
+    const latestReactions = await userRepository.findLatestReactions(id)
+
     res.render('user/author', { 
         metaTags: defineMetaTags(req, userWithPosts.data.user.nickname, userWithPosts.data.user.nickname, userWithPosts.data.user.bio),  
         data: userWithPosts,
         postsCount,
         categories,
-        latestReactions
+        latestReactions,
+        isFollowing
     })
+}
+
+export const follow = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { id: followerId } = req.user as SavedUser
+    const [result, isFollowing] = await userRepository.follow(followerId, id)
+    res.json({ success: result.success, message: result.message, isFollowing })
 }

@@ -19,11 +19,15 @@
             </h3>
         </div>
         <div class="fixed-column bg-text-white p-4">
-            <%- include ('../partials/fragments/counters.ejs', { followers: 0, postsCount }) %>
+            <%- include ('../partials/fragments/counters.ejs', { followers: data.data.user.followingCount, postsCount }) %>
             <% if (user) { %>
-                <a href="#" class="btn btn-light d-block w-100 mb-4">
-                    Follow
-                </a>
+                <button class="btn btn-light d-block w-100 mb-4" onclick="follow(this, '<%= data.data.user.id %>')">
+                    <% if (isFollowing) { %>
+                        Unfollow
+                    <% } else { %>
+                        Follow
+                    <% } %>
+                </button>
             <% } %>
 
             <%- include ('../partials/fragments/posts.ejs', { posts: latestReactions, title: 'Latest reactions' }) %>

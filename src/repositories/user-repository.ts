@@ -85,7 +85,13 @@ export class UserRepository {
                     isDeleted: true,
                     isEmailVerified: true,
                     createdAt: true,
-                    password: false
+                    password: false,
+                    _count: {
+                        select: {
+                            followers: true,
+                            followings: true
+                        }
+                    }
                 },
                 where: {
                     id: id
@@ -93,7 +99,7 @@ export class UserRepository {
             })
 
             return user
-                ? new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string)
+                ? new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user._count.followers,user._count.followings, user.bio as string)
                 : null
 
         } catch (error) {
@@ -114,6 +120,13 @@ export class UserRepository {
                     isEmailVerified: true,
                     createdAt: true,
                     password: false,
+                    _count: {
+                        select: {
+                            posts: true,
+                            followers: true,
+                            followings: true
+                        }
+                    },
                     posts: {
                         where: {
                             published: true,
@@ -164,21 +177,23 @@ export class UserRepository {
                 return null
             }
 
-            const totalUserPosts = await prismaClient.post.count({
-                where: {
-                    authorId: id,
-                    published: true,
-                    isDeleted: false
-                }
-            })
-
-            const pagination = new Pagination(page, totalUserPosts, limit)
+            const pagination = new Pagination(page, user._count.posts, limit)
             const posts = user.posts.map(post =>
                 new Post(post.id, post.title, post.content as string, post.published, user.nickname, 
                         user.id, post.createdAt, post.views, post.category.name, post.slug, post.hashtags.split(','), 
                         post._count.comments, calculateReadingTime(post.content as string), 
-                        post._count.reactions, post.canRepost, post._count.children, post.parent?.slug,))
-            const pagedUser = new UserWithPosts(new SavedUser(user.id, user.nickname, user.email, user.isDeleted, user.isEmailVerified, user.createdAt, user.isDeleted, user.bio as string), posts)
+                        post._count.reactions, post.canRepost, post._count.children, post.parent?.slug))
+            const userFound = new SavedUser(user.id, 
+                user.nickname, 
+                user.email, 
+                user.isDeleted, 
+                user.isEmailVerified, 
+                user.createdAt, 
+                user.isDeleted, 
+                user._count.followers, 
+                user._count.followings, 
+                user.bio as string)
+            const pagedUser = new UserWithPosts(userFound, posts)
             return new PagedUsersWithPosts(pagedUser, pagination)
         } catch (error) {
             console.error(error)
@@ -254,6 +269,11 @@ export class UserRepository {
                     },
                     published: true,
                     isDeleted: false,
+                    author: {
+                        id: {
+                            not: id
+                        }
+                    }
                 },
                 select: {
                     id: true,
@@ -331,6 +351,139 @@ export class UserRepository {
         } catch (error) {
             console.error(error)
             return []
+        }
+    }
+
+    async follow(followerId: string, followingId: string): Promise<[Result, boolean]> {
+        try {
+            const followExists = await prismaClient.follower.findFirst({
+                where: {
+                    followerId,
+                    followingId
+                }
+            })
+
+            if (followExists) {
+                await prismaClient.follower.delete({
+                    where: {
+                        id: followExists.id
+                    }
+                })
+
+                return [Result.setError('Unfollowed thinker successfully'), false]
+            }
+
+            const follow = await prismaClient.follower.create({
+                data: {
+                    followerId,
+                    followingId
+                }
+            })
+
+            return follow
+                ? [Result.setSuccess('User followed successfully'), true]
+                : [Result.setError('Error following user'), false]
+        } catch (error) {
+            console.error(error)
+            return [Result.setError('Error following user'), false]
+        }
+    }
+
+    async findFollowers(id: string, page: number = 1, limit: number = 30): Promise<PagedTinyUsers | null> {
+        try {
+            const userFollowers = await prismaClient.user.findFirst({
+                select: {
+                    followers: {
+                        select: {
+                            follower: {
+                                select: {
+                                    id: true,
+                                    nickname: true
+                                }
+                            }
+                        }
+                    },
+                    _count: {
+                        select: {
+                            followers: true
+                        }
+                    }
+                },
+                where: {
+                    id
+                },
+                skip: (page - 1) * limit,
+                take: limit
+            })
+
+            if (!userFollowers) {
+                return null
+            }
+
+            const pagination = new Pagination(page, userFollowers?._count.followers, limit)
+            const pagedFollowers = userFollowers?.followers.map(follower => new TinyUser(follower.follower.id, follower.follower.nickname, ''))
+            return new PagedTinyUsers(pagedFollowers, pagination)
+        } catch (error) {
+            console.error(error)
+            return null
+        }
+    }
+
+    async findFollowing(id: string, page: number = 1, limit: number = 30): Promise<PagedTinyUsers | null> {
+        try {
+            const userFollowings = await prismaClient.user.findFirst({
+                select: {
+                    followings: {
+                        select: {
+                            following: {
+                                select: {
+                                    id: true,
+                                    nickname: true
+                                }
+                            }
+                        }
+                    },
+                    _count: {
+                        select: {
+                            followings: true
+                        }
+                    }
+                },
+                where: {
+                    id
+                },
+                skip: (page - 1) * limit,
+                take: limit
+            })
+
+            if (!userFollowings) {
+                return null
+            }
+
+            const pagination = new Pagination(page, userFollowings?._count.followings, limit)
+            const pagedFollowings = userFollowings?.followings.map(following => new TinyUser(following.following.id, following.following.nickname, ''))
+            return new PagedTinyUsers(pagedFollowings, pagination)
+        } catch (error) {
+            console.error(error)
+            return null
+        }
+    }
+
+    async isFollowing(followerId: string, followingId: string): Promise<boolean> {
+        try {
+            const followExists = await prismaClient.follower.findUnique({
+                where: {
+                    followerId_followingId: {
+                        followerId,
+                        followingId
+                    }
+                }
+            })
+
+            return !!followExists
+        } catch (error) {
+            console.error(error)
+            return false
         }
     }
 }

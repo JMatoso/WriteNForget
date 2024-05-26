@@ -10,7 +10,18 @@ export class SavedUser {
     isEmailVerified: boolean
     createdAt: Date
     isDeleted: boolean
-    constructor(id: string, nickname: string, email: string, isEnabled: boolean, isEmailVerified: boolean, createdAt: Date, isDeleted: boolean, bio?: string) {
+    followersCount: number
+    followingCount: number
+    constructor(id: string, 
+                nickname: string, 
+                email: string, 
+                isEnabled: boolean, 
+                isEmailVerified: boolean, 
+                createdAt: Date, 
+                isDeleted: boolean, 
+                followersCount: number,
+                followingCount: number,
+                bio?: string) {
         this.id = id
         this.nickname = nickname
         this.bio = bio
@@ -19,6 +30,8 @@ export class SavedUser {
         this.isEmailVerified = isEmailVerified
         this.createdAt = createdAt
         this.isDeleted = isDeleted
+        this.followersCount = followersCount
+        this.followingCount = followingCount
     }
 }
 

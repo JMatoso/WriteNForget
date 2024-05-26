@@ -61,6 +61,6 @@
     <% }) %>
 </div>
 
-<% if (data.posts && data.posts.length > 0) { %>
+<% if (data.posts && data.posts.length > 0 && data.pagination.hasNext) { %>
     <%- include ('../partials/fragments/pagination.ejs', { pagination: data.pagination })  %>
 <% } %>

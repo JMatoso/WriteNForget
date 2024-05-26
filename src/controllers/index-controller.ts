@@ -6,7 +6,6 @@ import { CategoryRepository } from '../repositories/category-repository'
 
 import path from 'path'
 
-
 const userRepository = new UserRepository()
 const postRepository = new PostRepository()
 const categoryRepository = new CategoryRepository()
@@ -26,6 +25,10 @@ export const index = async (req: Request, res: Response) => {
 export const notFound = (req: Request, res: Response, next: NextFunction) => {
     const metaTags = defineMetaTags(req, 'Not Found')
     res.status(404).render('notfound', { metaTags })
+}
+
+export const notFoundRedirect = (req: Request, res: Response) => {
+    res.render('notfound', { metaTags: defineMetaTags(req, 'Not Found') })
 }
 
 export const error = (req: Request, res: Response, next: NextFunction) => {

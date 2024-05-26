@@ -1,26 +1,22 @@
 import path from 'path'
-import csurf from 'csurf'
 import express from "express"
 import { Request, Response, NextFunction } from 'express'
 import passport from 'passport'
 require('./config/auth')(passport)
 import flash from 'connect-flash'
-import { randomUUID } from 'crypto'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'
+import appRouter from './routes/app-routes'
 import userRouter from "./routes/user-routes"
 import postRouter from "./routes/post-routes"
 import { MessageType } from './types/message-types'
 import { getFirstPath } from './helpers/request-helper'
-import { formatDistanceToNow } from 'date-fns'
-import moment from 'moment'
-import numeral from 'numeral'
-import appRouter from './routes/app-routes'
 import { notFound, error } from './controllers/index-controller'
 
 const app = express()
 const PORT = process.env.PORT || 3000
-const SECRET = process.env.SECRET || randomUUID()
+const MAX_AGE = process.env.MAX_AGE || 1000 * 60 * 60 * 24
+const SECRET = process.env.SECRET || require('crypto').randomBytes(64).toString('hex')
 
 app.use(cookieParser(SECRET))
 app.use(express.json())
@@ -33,12 +29,12 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         secure: false,
-        maxAge: 1000 * 60 * 60 * 24 * 30
+        maxAge: parseInt(MAX_AGE as string) 
     }
 }))
 
 app.use(flash())
-app.use(csurf())
+app.use(require('csurf')())
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -51,13 +47,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.user = req.user || null
     res.locals.path = getFirstPath(req)
     res.locals.year = new Date().getFullYear()
-
-    res.locals.moment = moment
-    res.locals.numeral = numeral
-    res.locals.formatDistanceToNow = formatDistanceToNow
-
     next()
 })
+
+app.locals.moment = require('moment')
+app.locals.numeral = require('numeral')
+app.locals.pluralize = require('pluralize')
+app.locals.formatDistanceToNow = require('date-fns').formatDistanceToNow
 
 app.use(function (req: Request, res: Response, next: NextFunction) {
     res.locals.csrfToken = req.csrfToken()
@@ -78,5 +74,5 @@ app.listen({
     host: '0.0.0.0',
     port: PORT,
 }, () => {
-    console.log(`\nServer is running on port ${PORT}\n`)
+    console.log(`\nServer running on port ${PORT}\n`)
 })

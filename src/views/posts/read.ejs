@@ -134,6 +134,12 @@
                     </div>
                 <% }) %>
             </div>
+
+            <% if (post.numberOfComments == 0) { %>
+                <div class="text-center">
+                    <h6 class="text-muted">No responses yet</h6>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>

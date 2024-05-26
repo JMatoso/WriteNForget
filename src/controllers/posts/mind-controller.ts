@@ -38,6 +38,7 @@ export const write = async (req: Request, res: Response) => {
 
     const { id } = req.user as SavedUser
     const post = await postRepository.findPostToEdit(postId, id)
+    
 
     if (!post) {
         res.render('posts/write', { metaTags: defineMetaTags(req, 'Write Thought', nickname), post: emptyPost })

@@ -59,7 +59,7 @@ async function react(element, id) {
         } else { toast(result.message, '#FFFFFF') }
 
         element.disabled = false
-    } 
+    }
     catch (error) { setError(error) }
 }
 
@@ -78,7 +78,7 @@ async function publish(element, id) {
         const data = JSON.parse(await response.text())
         if (data.success === false) { element.disabled = false }
         toast(data.message, '#FFFFFF')
-    } 
+    }
     catch (error) { setError(error) }
 }
 
@@ -119,7 +119,7 @@ async function comment(element, postId, authorNickname) {
 
         element.disabled = false
         commentPlaceholder.disabled = false
-    } 
+    }
     catch (error) { setError(error) }
 
     function setData(authorId, authorNickname, timeAgo, text, isAuthor, commentId) {
@@ -180,7 +180,7 @@ async function deleteComment(element, commentId) {
             commentCounter.textContent = commentCounterValue - 1
         } else { toast(data.message, '#FFFFFF') }
         element.disabled = false
-    } 
+    }
     catch (error) { setError(error) }
 }
 
@@ -225,14 +225,36 @@ async function rethought(element, postId) {
         })
 
         const data = JSON.parse(await response.text())
-        if (data.success === false) { 
-            element.disabled = false 
+        if (data.success === false) {
+            element.disabled = false
             element.classList.add('border-0')
             const count = parseInt(rethoughtCounter.textContent)
             rethoughtCounter.textContent = count - 1
         }
 
         toast(data.message, '#FFFFFF')
-    } 
+    }
+    catch (error) { setError(error) }
+}
+
+async function follow(element, followingId) {
+    try {
+        element.disabled = true
+        const csrfToken = document.getElementById('csrfToken').value
+
+        const response = await fetch(`/follow/${followingId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'CSRF-Token': csrfToken
+            }
+        })
+
+        const data = JSON.parse(await response.text())
+        const message = data.isFollowing ? 'Unfollow' : 'Follow'
+        element.textContent = message
+        element.disabled = false
+        toast(data.message, '#FFFFFF')
+    }
     catch (error) { setError(error) }
 }

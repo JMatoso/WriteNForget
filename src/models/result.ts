@@ -19,4 +19,8 @@ export class Result {
     static setWarning(message: string) {
         return new Result(MessageType.Warning, message)
     }
+
+    get success(): boolean {
+        return this.type === MessageType.Success
+    }
 }

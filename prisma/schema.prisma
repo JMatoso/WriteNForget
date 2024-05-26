@@ -54,6 +54,8 @@ model User {
   comments        Comment[]
   posts           Post[]
   reactions       Reaction[]
+  followers       Follower[] @relation("Followers")
+  followings      Follower[] @relation("Followings")
 
   @@map("users")
 }
@@ -80,4 +82,16 @@ model Reaction {
   post     Post   @relation(fields: [postId], references: [id])
 
   @@map("reactions")
+}
+
+model Follower {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  followerId  String
+  follower    User     @relation("Followers", fields: [followerId], references: [id])
+  followingId String
+  following   User     @relation("Followings", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+  @@map("followers")
 }
