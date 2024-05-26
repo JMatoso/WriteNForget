@@ -31,10 +31,14 @@ export const notFoundRedirect = (req: Request, res: Response) => {
     res.render('notfound', { metaTags: defineMetaTags(req, 'Not Found') })
 }
 
-export const error = (req: Request, res: Response, next: NextFunction) => {
+export const error = (err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log(process.env.NODE_ENV, 'From error controller', err);
     if (process.env.NODE_ENV !== 'development') {
         res.status(500).render('error', { metaTags: defineMetaTags(req, 'Error') })
+        return
     } 
+    
+    next(err)
 }
 
 export const contact = (req: Request, res: Response) => {
