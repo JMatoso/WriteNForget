@@ -772,7 +772,7 @@ export class PostRepository {
         try {
             const recentPosts = await this.findRecentPosts(limit, page)
             const popularPosts = await this.findPopularPosts(limit, page)
-
+            
             if (recentPosts === null || popularPosts === null) {
                 return null
             }

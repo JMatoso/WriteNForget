@@ -28,6 +28,9 @@ model Post {
   parent     Post?      @relation("Reposts", fields: [parentId], references: [id])
   children   Post[]     @relation("Reposts")
 
+  @@index([views])
+  @@index([published, isDeleted])
+  @@index([title, hashtags, content])
   @@map("posts")
 }
 
@@ -38,6 +41,8 @@ model Category {
   isDeleted Boolean  @default(false)
   posts     Post[]
 
+  @@index([name])
+  @@index([isDeleted])
   @@map("categories")
 }
 
@@ -57,6 +62,8 @@ model User {
   followers       Follower[] @relation("Followers")
   followings      Follower[] @relation("Followings")
 
+  @@index([nickname])
+  @@index([isDeleted])
   @@map("users")
 }
 
@@ -70,6 +77,7 @@ model Comment {
   author    User     @relation(fields: [authorId], references: [id])
   post      Post     @relation(fields: [postId], references: [id])
 
+  @@index([text])
   @@map("comments")
 }
 
@@ -81,6 +89,7 @@ model Reaction {
   author   User   @relation(fields: [authorId], references: [id])
   post     Post   @relation(fields: [postId], references: [id])
 
+  @@index([type])
   @@map("reactions")
 }
 

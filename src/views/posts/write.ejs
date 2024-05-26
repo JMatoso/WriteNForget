@@ -68,49 +68,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-
-<script>
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            placeholder: 'Write your thoughts here',
-            fontSize: {
-                options: [ 10, 12, 14, 'default', 18, 20, 22 ],
-                supportAllValues: true
-            },
-        })
-        .catch(error => {
-            console.error(error);
-        });
-
-    function initAutoCompleteElement() {
-        const autoCompleteJS = new autoComplete({
-                selector: `#autoComplete`,
-                data: {
-                    src: async (query) => {
-                        try {
-                            const source = await fetch(`/fetch-categories`)
-                            return await source.json()
-                        } catch (error) { return error }
-                    }, 
-                    cache: true,
-                },
-                resultItem: {
-                    diacritics: false,
-                    highlight: true,
-                },
-                events: {
-                    input: {
-                        selection: (event) => {
-                            const selection = event.detail.selection.value;
-                            autoCompleteJS.input.value = selection;
-                        }
-                    }
-                }
-            });
-    }
-
-    initAutoCompleteElement();
-</script>
-
+<script src="/js/write.js"></script>
 
 <%- include ('../partials/just-footer.ejs') %>

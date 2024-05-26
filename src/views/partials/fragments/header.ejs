@@ -5,4 +5,10 @@
     <blockquote>
         <%= cite %>
     </blockquote>
+
+    <% if (show) { %>
+        <% if ((postsCount || postsCount == 0) && (following || following == 0) && (followers || followers == 0)) { %>
+            <%- include ('../fragments/counters.ejs', { followers, following, postsCount }) %>
+        <% } %>
+    <% } %>
 </div>

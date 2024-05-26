@@ -2,7 +2,13 @@
 
 <div class="row">
     <div class="col-md-8 border-end">
-        <%- include ('../partials/fragments/header.ejs', { title: locals.user.nickname, cite: locals.user.bio }) %>
+        <%- include ('../partials/fragments/header.ejs', { 
+            title: locals.user.nickname, 
+            cite: locals.user.bio,
+            show: true,
+            postsCount: data.postsCount,
+            followers: locals.user.followingCount,
+            following: locals.user.followersCount }) %>
 
         <div class="my-4">
             <%- include ('../partials/alerts.ejs') %>
@@ -19,8 +25,6 @@
             </h3>
         </div>
         <div class="fixed-column bg-text-white p-4">
-            <%- include ('../partials/fragments/counters.ejs', { followers: locals.user.followingCount, postsCount: data.postsCount }) %>
-
             <a href="/mind/edit" class="btn btn-light d-block w-100 mb-4">
                 Edit My Profile
             </a>

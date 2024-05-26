@@ -13,13 +13,9 @@ export const react = async (req: Request, res: Response) => {
         return
     }
 
-    if (req.isAuthenticated()) {
-        const user = req.user as SavedUser
-        const result = await postRepository.addReaction(req.params.id, user.id, ReactionType.Star)
-        res.json({ success: result.success, message: result.message })
-    }
-
-    res.json({ success: true, message: 'Reaction added'})
+    const user = req.user as SavedUser
+    const result = await postRepository.addReaction(req.params.id, user.id, ReactionType.Star)
+    res.json({ success: result.success, message: result.message })
 }
 
 export const publish = async (req: Request, res: Response) => {
@@ -54,21 +50,10 @@ export const comment = async (req: Request<{}, {}, CreateComment>, res: Response
 export const deleteComment = async (req: Request, res: Response) => {
     const { id: userId } = req.user as SavedUser
     const result = await postRepository.removeComment(req.params.id, userId)
-
-    if (result.type !== MessageType.Success) {
-        res.json({ success: false, message: result.message })
-        return
-    }
-
-    res.json({ success: true, message: result.message })
+    res.json({ success: result.success, message: result.message })
 }
 
 export const reactComment = async (req: Request, res: Response) => {
     const result = await postRepository.reactComment(req.params.id)
-    if (result.type !== MessageType.Success) {
-        res.json({ success: false, message: result.message })
-        return
-    }
-
-    res.json({ success: true, message: result.message })
+    res.json({ success: result.success, message: result.message })
 }
