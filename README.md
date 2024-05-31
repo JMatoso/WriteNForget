@@ -65,6 +65,7 @@ To get started with the project, follow these steps:
     SECRET="your-session-secret"
     NODE_ENV="development"
     MAX_AGE=86400
+    EMAIL="your-email@example.com"
     ```
 
 4. Run database migrations:
