@@ -19,14 +19,14 @@ model Post {
   isDeleted  Boolean    @default(false)
   slug       String     @unique
   views      Int        @default(0)
+  canRepost  Boolean    @default(false)
+  parentId   String?
   comments   Comment[]
   author     User       @relation(fields: [authorId], references: [id])
   category   Category   @relation(fields: [categoryId], references: [id])
-  reactions  Reaction[]
-  canRepost  Boolean    @default(false)
-  parentId   String?
   parent     Post?      @relation("Reposts", fields: [parentId], references: [id])
   children   Post[]     @relation("Reposts")
+  reactions  Reaction[]
 
   @@index([views])
   @@index([published, isDeleted])
@@ -57,10 +57,10 @@ model User {
   isDeleted       Boolean    @default(false)
   bio             String?
   comments        Comment[]
-  posts           Post[]
-  reactions       Reaction[]
   followers       Follower[] @relation("Followers")
   followings      Follower[] @relation("Followings")
+  posts           Post[]
+  reactions       Reaction[]
 
   @@index([nickname])
   @@index([isDeleted])
@@ -97,8 +97,8 @@ model Follower {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   followerId  String
-  follower    User     @relation("Followers", fields: [followerId], references: [id])
   followingId String
+  follower    User     @relation("Followers", fields: [followerId], references: [id])
   following   User     @relation("Followings", fields: [followingId], references: [id])
 
   @@unique([followerId, followingId])

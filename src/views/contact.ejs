@@ -1,8 +1,42 @@
 <%- include ('partials/header.ejs') %>
 
 <div class="app-container">
-    <%- include ('partials/fragments/header.ejs', { title: 'Get in Touch', cite: 'You wanna talk?' }) %>
+    <%- include ('partials/fragments/header.ejs', { title: 'Get in Touch', cite: 'You wanna talk?', show: false }) %>
     <%- include ('partials/alerts.ejs') %>
+    <p>We love hearing from our users and are always here to help. Whether you have a question, feedback, or just want to say hello, feel free to reach out to us using the form below. We will do our best to respond as soon as possible.</p>
+    <form action="/contact" method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="message" class="form-label">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-warning">Submit</button>
+    </form>
+    <p class="mt-3">Alternatively, you can email us at <a href="mailto:
+        <%- process.env.EMAIL %>"><%- process.env.EMAIL %></a> or connect with us on social media using the links below.</p>
+
+    <div class="social-links fs-3">
+        <!--a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
+            <i class="fa-brands fa-facebook"></i>
+        </a>
+        <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+            <i class="fa-brands fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+        </a-->
+        <a href="https://www.github.com/JMatoso/WriteNForget" target="_blank" rel="noopener noreferrer" title="Github">
+            <i class="fa-brands fa-github"></i>
+        </a>
+    </div>
+
     <%- include ('partials/fragments/footer.ejs') %>
 </div>
     
