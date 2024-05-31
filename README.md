@@ -99,3 +99,4 @@ The site is hosted on Render and the database on Aiven. Follow these steps for d
 ## Notes
 
 This project is used for my studies in Node.js and related technologies. Feel free to use and modify the code for your learning purposes.
+<p>There may still be things to improve. :)</p>
